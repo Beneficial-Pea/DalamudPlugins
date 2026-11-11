@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'LogMimic_SourceKit.zip'
+      - 'plugins/LogMimic/ui/**'
       - '.github/workflows/ci.yml'
       - '.github/workflows/release.yml'
   workflow_dispatch:
@@ -37,7 +38,10 @@ jobs:
         run: python tools/fix_oracle_anchor.py
       - name: Apply LogMimic source patch
         shell: pwsh
-        run: python prepare_standalone.py upstream --repository Beneficial-Pea/dalamudplugins --version 0.1.0.0
+        run: python prepare_standalone.py upstream --repository Beneficial-Pea/dalamudplugins --version 0.2.0.0
+      - name: Apply LogMimic interface and localization
+        shell: pwsh
+        run: python plugins/LogMimic/ui/apply_ui.py upstream
       - name: Fetch Dalamud development libraries
         shell: pwsh
         run: |

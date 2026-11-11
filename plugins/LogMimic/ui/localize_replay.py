@@ -1,0 +1,51 @@
+import json
+from pathlib import Path
+
+def apply(root, assets):
+ p=root/'Oracle/Services/LogMimicService.cs';s=p.read_text()
+ entries=[
+ ('"Stopped"','stopped','Stopped','중지됨',[]),
+ ('"No active replay fight"','inactive','No active replay fight','진행 중인 재생 전투가 없습니다',[]),
+ ('$"Job mismatch: timeline job {active.ClassJobId}, current job {currentJobId}"','job','Job mismatch: timeline {0}, current {1}','직업 불일치: 타임라인 {0}, 현재 {1}',['active.ClassJobId','currentJobId']),
+ ('"Paused — /lm replay on"','paused','Paused — /lm replay on','일시정지 — /lm replay on',[]),
+ ('"Replay finished"','finished','Replay finished','재생 완료',[]),
+ ('$"Waiting {next.TimeOffsetSec - elapsed:0.0}s: {ActionLookup.GetName(next.ActionId)}"','waiting','Waiting {0:0.0}s: {1}','{0:0.0}초 대기: {1}',['next.TimeOffsetSec - elapsed','ActionLookup.GetName(next.ActionId)']),
+ ('$"Awaiting confirmation: {ActionLookup.GetName(next.ActionId)}"','confirm','Awaiting confirmation: {0}','사용 확인 대기: {0}',['ActionLookup.GetName(next.ActionId)']),
+ ('$"Loaded {_main.Count} DPS + {_independent.Count} independent actions. /lm replay on"','loaded','Loaded {0} main + {1} independent actions. /lm replay on','메인 {0}개 + 별도 스킬 {1}개 불러옴. /lm replay on',['_main.Count','_independent.Count']),
+ ('$"Waiting for target {cue.ReplayTargetLogId} ({cue.ReplayTargetName}): {reason}"','target','Waiting for target {0} ({1}): {2}','대상 {0} ({1}) 대기: {2}',['cue.ReplayTargetLogId','cue.ReplayTargetName','reason']),
+ ('$"Retrying: {ActionLookup.GetName(cue.ActionId)} ({(independent ? "independent" : "strict")})"','retrying','Retrying: {0} ({1})','재시도 중: {0} ({1})',['ActionLookup.GetName(cue.ActionId)','I18n.Get(independent ? "replay.independent" : "replay.strict")']),
+ ('$"Sent: {ActionLookup.GetName(cue.ActionId)}"','sent','Sent: {0}','사용 요청: {0}',['ActionLookup.GetName(cue.ActionId)']),
+ ('$"Retry: {ActionLookup.GetName(cue.ActionId)}"','retry','Retry: {0}','재시도: {0}',['ActionLookup.GetName(cue.ActionId)']),
+ ('"unclassified FFLogs actor, manual bind required"','unknown_actor','Unclassified actor; bind manually','분류되지 않은 대상입니다. 직접 연결하세요',[]),
+ ('"missing target name; manual bind required"','missing_name','Missing target name; bind manually','대상 이름이 없습니다. 직접 연결하세요',[]),
+ ('"not spawned / localized name mismatch"','not_spawned','Not spawned / name mismatch','등장 전이거나 이름이 일치하지 않습니다',[]),
+ ('"multiple matches; bind manually"','multiple','Multiple matches; bind manually','대상이 여러 개입니다. 직접 연결하세요',[]),
+ ('"Load a replay document and start a real fight first."','need_fight','Load a replay preset and start a real fight first.','재생 프리셋을 불러온 뒤 실제 전투를 시작하세요.',[]),
+ ('"ON — strict replay enabled"','on','ON — strict replay enabled','켜짐 — 순서대로 재생합니다',[]),
+ ('"OFF — replay paused"','off','OFF — replay paused','꺼짐 — 재생을 중지했습니다',[]),
+ ('$"{_state} | main={_mainIndex}/{_main.Count}, independent={_independentDone.Count}/{_independent.Count}"','progress','{0} | main={1}/{2}, independent={3}/{4}','{0} | 메인={1}/{2}, 별도={3}/{4}',['_state','_mainIndex','_main.Count','_independentDone.Count','_independent.Count']),
+ ('"No imported replay timelines."','empty','No imported replay timelines.','가져온 재생 타임라인이 없습니다.',[]),
+ ('$"Saved replay profiles: {candidates.Count} (any job, any FFLogs report)"','profiles','Saved replay presets: {0} (all jobs and reports)','저장된 재생 프리셋: {0}개 (모든 직업 및 보고서)',['candidates.Count']),
+ ('"Showing first 60 profiles only."','limit','Showing the first 60 presets only.','처음 60개 프리셋만 표시합니다.',[]),
+ ('"Load a different profile before pull."','before_pull','Load a different preset before combat.','전투 시작 전에 다른 프리셋을 불러오세요.',[]),
+ ('"Usage: /lm replay load <timeline name>"','load_usage','Usage: /lm replay load <timeline name>','사용법: /lm replay load <타임라인 이름>',[]),
+ ('$"Replay timeline not found: {token}"','not_found','Replay timeline not found: {0}','재생 타임라인을 찾지 못했습니다: {0}',['token']),
+ ('$"Profile is for job {profile.ClassJobId}; change to the matching job before pull."','wrong_job','Preset job: {0}. Change to the matching job before combat.','프리셋 직업: {0}. 전투 전에 같은 직업으로 변경하세요.',['profile.ClassJobId']),
+ ('$"Loaded [{JobActionCatalog.GetJobLabel(profile.ClassJobId)}] {profile.Name}"','profile_loaded','Loaded [{0}] {1}','불러옴 [{0}] {1}',['JobActionCatalog.GetJobLabel(profile.ClassJobId)','profile.Name']),
+ ('$"Skipped {_main[_mainIndex].ActionId} (manual only)"','skipped','Skipped {0} (manual)','{0} 건너뜀 (수동)',['_main[_mainIndex].ActionId']),
+ ('"Target the intended monster first."','select_target','Select the intended target first.','먼저 연결할 대상을 선택하세요.',[]),
+ ('$"Bound FFLogs {logId} to {selected.Name.TextValue}"','bound','Bound FFLogs {0} to {1}','FFLogs {0} 대상을 {1}에 연결했습니다',['logId','selected.Name.TextValue']),
+ ('$"Updated {part} {id}. Takes effect on next pull."','updated','Updated {0} {1}. Applies next fight.','{0} {1} 변경됨. 다음 전투부터 적용됩니다.',['part','id']),
+ ('"Commands: list, load <name>, on, off, status, skip, targets, bind <logActorId>, exclude <actionId>, independent <actionId>"','commands','/lm replay: list, load <name>, on, off, status, skip, targets, bind <actor ID>, exclude <action ID>, independent <action ID>','/lm replay: list, load <이름>, on, off, status, skip, targets, bind <대상 ID>, exclude <스킬 ID>, independent <스킬 ID>',[]),
+ ]
+ en={};ko={}
+ for literal,key,english,korean,args in entries:
+  if s.count(literal)!=1: raise RuntimeError(f'Replay localization anchor {key}: {s.count(literal)}')
+  key='replay.'+key
+  expr=f'I18n.Format("{key}", '+', '.join(args)+')' if args else f'I18n.Get("{key}")'
+  s=s.replace(literal,expr);en[key]=english;ko[key]=korean
+ p.write_text(s)
+ for lang,table in [('en',en),('ko',ko)]:
+  table.update({'replay.independent':'별도' if lang=='ko' else 'independent','replay.strict':'순서 유지' if lang=='ko' else 'strict','replay.import_all':'모든 플레이어 스킬 가져오기 (GCD + oGCD)' if lang=='ko' else 'Import all player actions (GCD + oGCD)'})
+  path=root/f'Oracle/Data/I18n/{lang}.json';m=json.loads(path.read_text());m.update(table);path.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+ p=root/'Oracle/UI/FFLogsImportPanel.cs';s=p.read_text();s=s.replace('"Replay: import ALL player casts (GCD + oGCD)"','I18n.Get("replay.import_all")');p.write_text(s)

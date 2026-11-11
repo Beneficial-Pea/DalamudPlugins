@@ -1,0 +1,168 @@
+using Dalamud.Interface.Utility;
+using Dalamud.Interface.Textures;
+using Oracle.Models;
+
+namespace Oracle.UI;
+
+internal sealed partial class ConfigWindow
+{
+    public LogMimicService? Replay { private get; set; }
+    private string _lmPage = "home";
+    private int _targetActorId;
+    private static string L(string key) => I18n.Get("lm." + key);
+
+    private void DrawLogMimic()
+    {
+        var scale = ImGuiHelpers.GlobalScale;
+        var width = ImGui.GetWindowSize().X;
+        ImGui.SetCursorPos(new Vector2(20, 14) * scale);
+        var icon = MirageUi.PluginInfo.IconPath;
+        if (!string.IsNullOrEmpty(icon))
+        {
+            var texture = PluginServices.TextureProvider.GetFromFile(icon).GetWrapOrDefault();
+            if (texture != null)
+            {
+                ImGui.Image(texture.Handle, new Vector2(44, 44) * scale);
+                ImGui.SameLine();
+            }
+        }
+        ImGui.BeginGroup();
+        MirageUi.Text("LOGMIMIC", MirageUi.Color.Title, fontSize: MirageUi.FontSize.Large);
+        MirageUi.Text(L("tagline"), MirageUi.Color.Secondary);
+        ImGui.EndGroup();
+        ImGui.SameLine(Math.Max(340 * scale, width - 320 * scale));
+        if (ImGui.Button("EN##lmLanguage")) I18n.SetLanguage("en");
+        ImGui.SameLine();
+        if (ImGui.Button("한국어##lmLanguage")) I18n.SetLanguage("ko");
+        ImGui.SameLine();
+        ImGui.TextDisabled("/lm");
+        ImGui.SameLine();
+        if (ImGui.Button("X##lmClose")) IsOpen = false;
+        ImGui.SetCursorPos(new Vector2(20, 76) * scale);
+        Nav("home", "home"); ImGui.SameLine();
+        Nav("library", "library"); ImGui.SameLine();
+        Nav("import", "import"); ImGui.SameLine();
+        Nav("targets", "targets"); ImGui.SameLine();
+        Nav("settings", "settings"); ImGui.SameLine();
+        Nav("theme", "theme"); ImGui.SameLine();
+        Nav("about", "about");
+        ImGui.SetCursorPos(new Vector2(0, 116) * scale);
+        ImGui.Separator();
+        var bodyHeight = Math.Max(80 * scale, ImGui.GetWindowSize().Y - 150 * scale);
+        ImGui.SetCursorPos(new Vector2(0, 128) * scale);
+        using (var body = ImRaii.Child("##lmBody", new Vector2(0, bodyHeight), false))
+        {
+            if (body)
+            {
+                switch (_lmPage)
+                {
+                    case "library":
+                        EnsureDefaultSelection();
+                        var state = CreateTimelineTwoColumnState();
+                        MirageUi.TwoColumn.Draw(state, DrawMainContent);
+                        _sidebarCollapsed = state.SidebarCollapsed;
+                        break;
+                    case "import":
+                        DrawImportSplit(() => _ffLogsImport.Draw(), () => DrawImportActionsColumn(_ffLogsImport.SelectedClassJobId, "lmImportActions"));
+                        break;
+                    case "settings": _settings.Draw(); break;
+                    case "theme": ThemePage.Draw(); break;
+                    default:
+                        ImGui.SetCursorPos(new Vector2(24, 12) * scale);
+                        using (var content = ImRaii.Child("##lmContent", new Vector2(-24 * scale, 0), false))
+                        {
+                            if (content)
+                            {
+                                if (_lmPage == "targets") DrawReplayTargets();
+                                else if (_lmPage == "about") DrawLogMimicAbout();
+                                else DrawReplayHome();
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        ImGui.SetCursorPos(new Vector2(20 * scale, ImGui.GetWindowSize().Y - 24 * scale));
+        ImGui.TextDisabled("LogMimic  |  " + L("footer"));
+    }
+
+    private void Nav(string id, string key)
+    {
+        using var color = ImRaii.PushColor(ImGuiCol.Button,
+            _lmPage == id ? OracleTheme.Current.HeaderActive : OracleTheme.Current.FrameBg);
+        if (ImGui.Button(L(key) + "##lmNav" + id, new Vector2(130, 30) * ImGuiHelpers.GlobalScale))
+            _lmPage = id;
+    }
+
+    private void DrawReplayHome()
+    {
+        MirageUi.Header(L("session"));
+        ImGui.TextWrapped(L("intro"));
+        ImGui.Spacing();
+        var active = _engine.ActiveDocument;
+        ImGui.TextUnformatted(L("loaded") + ": " + (active?.Name ?? L("none")));
+        ImGui.TextUnformatted(L("status") + ": " + (Replay?.State ?? L("none")));
+        ImGui.TextUnformatted(L("mode") + ": " + (_engine.IsPreview ? L("preview") : _engine.IsRunning ? L("combat") : L("standby")));
+        ImGui.Spacing();
+        using (ImRaii.Disabled(Replay == null || !_engine.IsRunning || _engine.IsPreview || active?.ReplayEnabled != true))
+        {
+            if (ImGui.Button(L("start") + "##lmStart")) Replay?.Command(["on"]);
+        }
+        ImGui.SameLine();
+        if (ImGui.Button(L("pause") + "##lmPause")) Replay?.Command(["off"]);
+        ImGui.SameLine();
+        if (ImGui.Button(L("import") + "##lmQuickImport")) _lmPage = "import";
+        ImGui.Spacing();
+        ImGui.TextWrapped(L("manual"));
+        ImGui.Separator();
+        MirageUi.Header(L("presets"));
+        var presets = _store.Documents.Where(d => d.ReplayEnabled).ToList();
+        if (presets.Count == 0)
+        {
+            ImGui.TextWrapped(L("empty"));
+            return;
+        }
+        foreach (var doc in presets)
+        {
+            using var id = ImRaii.PushId(doc.Id);
+            ImGui.TextUnformatted(doc.Name);
+            ImGui.SameLine();
+            if (ImGui.SmallButton(L("load"))) Replay?.Command(["load", doc.Id]);
+            ImGui.SameLine();
+            if (ImGui.SmallButton(L("edit")))
+            {
+                OnSidebarSelectionChanged(TimelinePageId(doc.Id));
+                _lmPage = "library";
+            }
+        }
+    }
+
+    private void DrawReplayTargets()
+    {
+        MirageUi.Header(L("targets"));
+        ImGui.TextWrapped(L("target_help"));
+        ImGui.InputInt(L("actor_id"), ref _targetActorId);
+        using (ImRaii.Disabled(Replay == null || !Replay.HasReplayDocument || _targetActorId <= 0 || PluginServices.TargetManager.Target == null))
+        {
+            if (ImGui.Button(L("bind"))) Replay?.Command(["bind", _targetActorId.ToString()]);
+        }
+        ImGui.SameLine();
+        if (ImGui.Button(L("list_targets"))) Replay?.Command(["targets"]);
+        ImGui.Separator();
+        var doc = _engine.ActiveDocument;
+        if (doc == null) { ImGui.TextWrapped(L("empty_target")); return; }
+        foreach (var cue in doc.Cues.Where(c => c.ReplayTargetLogId > 0).GroupBy(c => c.ReplayTargetLogId).Select(g => g.First()))
+            ImGui.TextUnformatted($"{cue.ReplayTargetLogId}  |  {cue.ReplayTargetName}");
+    }
+
+    private static void DrawLogMimicAbout()
+    {
+        MirageUi.Header("LogMimic");
+        ImGui.TextWrapped(L("intro"));
+        ImGui.Spacing();
+        ImGui.TextWrapped(L("support"));
+        ImGui.Separator();
+        ImGui.TextWrapped(L("credits"));
+        ImGui.TextWrapped(L("experimental"));
+    }
+}

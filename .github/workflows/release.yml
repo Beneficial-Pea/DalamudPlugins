@@ -9,7 +9,7 @@ on:
       version:
         description: 'Release version (e.g. 0.1.0)'
         required: true
-        default: '0.1.0'
+        default: '0.2.0'
 
 permissions:
   contents: write
@@ -66,6 +66,10 @@ jobs:
           "BUILD_VERSION=$env:BUILD_VERSION" >> $env:GITHUB_ENV
           "BUILD_TAG=logmimic-v$version" >> $env:GITHUB_ENV
           python prepare_standalone.py upstream --repository $env:GITHUB_REPOSITORY --version $env:BUILD_VERSION
+
+      - name: Apply LogMimic interface and localization
+        shell: pwsh
+        run: python plugins/LogMimic/ui/apply_ui.py upstream
 
       - name: Download Dalamud assemblies
         shell: pwsh
