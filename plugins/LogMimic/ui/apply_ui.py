@@ -61,3 +61,5 @@ print('Applied LogMimic UI, icon, /lm command and EN/KO localization.')
 from localize_replay import apply
 apply(root, assets)
 replace('Oracle/UI/ConfigWindow.cs', '    public void SelectImportedTimeline(TimelineDocument doc)\n    {', '    public void SelectImportedTimeline(TimelineDocument doc)\n    {\n        _lmPage = "library";')
+
+replace("Oracle/UI/DebugWindow.cs", '"Oracle Debug"', '"LogMimic Debug"')
