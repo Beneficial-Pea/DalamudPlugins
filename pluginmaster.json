@@ -5,7 +5,7 @@
     "Punchline": "Replay FFLogs cast timelines with target-aware automation.",
     "Description": "Experimental FFLogs GCD/oGCD replay based on Oracle. Manual enable, strict main queue, independent mitigation queue, and target mapping. Not verified in actual combat.",
     "InternalName": "LogMimic",
-    "AssemblyVersion": "0.2.4.0",
+    "AssemblyVersion": "0.2.5.0",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 15,
     "RepoUrl": "https://github.com/Beneficial-Pea/DalamudPlugins",
@@ -16,8 +16,8 @@
     ],
     "IconUrl": "https://raw.githubusercontent.com/Beneficial-Pea/DalamudPlugins/main/plugins/LogMimic/icon.png",
     "ImageUrls": [],
-    "DownloadLinkInstall": "https://github.com/Beneficial-Pea/DalamudPlugins/releases/download/logmimic-v0.2.4/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/Beneficial-Pea/DalamudPlugins/releases/download/logmimic-v0.2.4/latest.zip",
-    "LastUpdate": 1794434625
+    "DownloadLinkInstall": "https://github.com/Beneficial-Pea/DalamudPlugins/releases/download/logmimic-v0.2.5/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/Beneficial-Pea/DalamudPlugins/releases/download/logmimic-v0.2.5/latest.zip",
+    "LastUpdate": 1794434760
   }
 ]
