@@ -45,13 +45,12 @@ internal sealed partial class ConfigWindow
         ImGui.SameLine();
         if (ImGui.Button("X##lmClose")) IsOpen = false;
         ImGui.SetCursorPos(new Vector2(20, 76) * scale);
-        _lmNavWidth = (width - 40 * scale - style.ItemSpacing.X * 6) / 7;
+        _lmNavWidth = (width - 40 * scale - style.ItemSpacing.X * 5) / 6;
         Nav("home", "home"); ImGui.SameLine();
         Nav("library", "library"); ImGui.SameLine();
         Nav("import", "import"); ImGui.SameLine();
         Nav("targets", "targets"); ImGui.SameLine();
         Nav("settings", "settings"); ImGui.SameLine();
-        Nav("theme", "theme"); ImGui.SameLine();
         Nav("about", "about");
         ImGui.SetCursorPos(new Vector2(0, 116) * scale);
         ImGui.Separator();
@@ -73,7 +72,6 @@ internal sealed partial class ConfigWindow
                         DrawImportSplit(() => _ffLogsImport.Draw(), () => DrawImportActionsColumn(_ffLogsImport.SelectedClassJobId, "lmImportActions"));
                         break;
                     case "settings": _settings.Draw(); break;
-                    case "theme": ThemePage.Draw(); break;
                     default:
                         ImGui.SetCursorPos(new Vector2(24, 12) * scale);
                         using (var content = ImRaii.Child("##lmContent", new Vector2(-24 * scale, 0), false))
