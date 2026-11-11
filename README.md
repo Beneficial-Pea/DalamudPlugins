@@ -47,7 +47,7 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 두 클라이언트 지원을 목표로 개발하고 있습니다. 현재 빌드는 **Dalamud API 15**를 대상으로 하며, 사용하는 Dalamud와 API 버전이 다르면 목록에 표시되지 않거나 실행할 수 없습니다. 버전 숫자만 바꿔서는 호환되지 않으므로 클라이언트별 확인이 필요합니다.
 
-문제가 생기면 [Issues](https://github.com/Beneficial-Pea/DalamudPlugins/issues)에 사용 중인 서버, 게임·Dalamud 버전, 재현 방법과 관련 로그를 남겨 주세요. 로그에 개인정보나 인증 정보가 포함되어 있지 않은지 확인해 주세요.
+문의는 디스코드 **달라살려** 채널에 남겨 주세요. 오류 문의 시 사용 중인 서버, 게임·Dalamud 버전, 재현 방법과 관련 로그를 함께 알려 주시면 확인에 도움이 됩니다. 로그를 올리기 전 개인정보나 인증 정보가 포함되어 있지 않은지 확인해 주세요.
 
 ---
 
@@ -94,7 +94,7 @@ Adding the repository does not install the plugin automatically; the first insta
 
 Support for both clients is a development goal. The current build targets **Dalamud API 15**. A different API version may prevent the plugin from appearing in the list or loading. Changing the manifest's version number alone does not make a build compatible.
 
-Please report problems in [Issues](https://github.com/Beneficial-Pea/DalamudPlugins/issues), including your client region, game and Dalamud versions, steps to reproduce, and relevant logs. Remove personal information and credentials before posting.
+For questions and support, please use the **달라살려** channel on Discord. For bug reports, include your client region, game and Dalamud versions, steps to reproduce, and relevant logs. Remove personal information and credentials before posting.
 
 ## Credits & License
 
