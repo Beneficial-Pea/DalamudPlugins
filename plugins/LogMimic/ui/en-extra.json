@@ -36,5 +36,7 @@
   "cmd.help.oracle": "Open LogMimic\n/lm config — Settings\n/lm replay list — List replay presets\n/lm replay load <name> — Load a replay preset\n/lm replay on|off|status — Replay controls\n/lm overlay timeline|major|icon — Toggle overlays\n/lm autorecord — Toggle recording\n/lm load <name> — Load a timeline\n/lm unload — Unload timeline\n/lm preview start [sec]|pause|stop — Preview\n/lm debug — Debug window",
   "lm.autoload": "Auto Load",
   "lm.autoload_help": "Load this preset when zone, job and phase match. Only one preset can use each match. An Any phase matches by zone and job. Presets do not switch during combat; enabling replay remains manual. Edit zone, job and phase in the library.",
-  "lm.resize": "Drag to resize the window"
+  "lm.resize": "Drag to resize the window",
+  "lm.minimize": "Minimize",
+  "lm.restore": "Restore"
 }

@@ -10,12 +10,17 @@ internal sealed partial class ConfigWindow
     private string _lmPage = "home";
     private int _targetActorId;
     private float _lmNavWidth;
+    private bool _lmMinimized;
+    private bool _lmRestoreSize;
+    private Vector2 _lmExpandedSize;
     private static string L(string key) => I18n.Get("lm." + key);
 
     private void DrawLogMimic()
     {
         var scale = ImGuiHelpers.GlobalScale;
         var width = ImGui.GetWindowSize().X;
+        var wasMinimized = _lmMinimized;
+        if (!_lmMinimized) _lmExpandedSize = ImGui.GetWindowSize();
         ImGui.SetCursorPos(new Vector2(20, 14) * scale);
         var icon = MirageUi.PluginInfo.IconPath;
         if (!string.IsNullOrEmpty(icon))
@@ -34,7 +39,8 @@ internal sealed partial class ConfigWindow
         var style = ImGui.GetStyle();
         var controlsWidth = ImGui.CalcTextSize("EN").X + ImGui.CalcTextSize("한국어").X
             + ImGui.CalcTextSize("/lm").X + ImGui.CalcTextSize("X").X
-            + style.FramePadding.X * 6 + style.ItemSpacing.X * 3;
+            + ImGui.CalcTextSize(_lmMinimized ? "+" : "-").X
+            + style.FramePadding.X * 8 + style.ItemSpacing.X * 4;
         ImGui.SetCursorPos(new Vector2(width - 12 * scale - controlsWidth, 14 * scale));
         if (ImGui.Button("EN##lmLanguage")) I18n.SetLanguage("en");
         ImGui.SameLine();
@@ -43,7 +49,11 @@ internal sealed partial class ConfigWindow
         ImGui.AlignTextToFramePadding();
         ImGui.TextDisabled("/lm");
         ImGui.SameLine();
+        if (ImGui.Button((_lmMinimized ? "+" : "-") + "##lmMinimize")) ToggleLogMimicMinimize();
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(L(_lmMinimized ? "restore" : "minimize"));
+        ImGui.SameLine();
         if (ImGui.Button("X##lmClose")) IsOpen = false;
+        if (_lmMinimized || wasMinimized) return;
         ImGui.SetCursorPos(new Vector2(20, 76) * scale);
         _lmNavWidth = (width - 40 * scale - style.ItemSpacing.X * 5) / 6;
         Nav("home", "home"); ImGui.SameLine();
@@ -92,8 +102,43 @@ internal sealed partial class ConfigWindow
         DrawResizeGrip();
     }
 
+    private void InitializeLogMimicSize()
+    {
+        _lmMinimized = C.LogMimicMinimized;
+        _lmExpandedSize = new Vector2(Math.Max(900, C.LogMimicExpandedWidth),
+            Math.Max(540, C.LogMimicExpandedHeight)) * ImGuiHelpers.GlobalScale;
+        _lmRestoreSize = _lmMinimized;
+        ConfigureLogMimicSize();
+    }
+
+    private void ToggleLogMimicMinimize()
+    {
+        _lmMinimized = !_lmMinimized;
+        _lmRestoreSize = true;
+        C.LogMimicMinimized = _lmMinimized;
+        C.LogMimicExpandedWidth = _lmExpandedSize.X / ImGuiHelpers.GlobalScale;
+        C.LogMimicExpandedHeight = _lmExpandedSize.Y / ImGuiHelpers.GlobalScale;
+        C.Save();
+    }
+
     private void ConfigureLogMimicSize()
     {
+        if (_lmMinimized)
+        {
+            Flags |= ImGuiWindowFlags.NoResize;
+            var compact = new Vector2(_lmExpandedSize.X, 68 * ImGuiHelpers.GlobalScale);
+            Size = compact;
+            SizeCondition = ImGuiCond.Always;
+            SizeConstraints = new() { MinimumSize = compact, MaximumSize = compact };
+            return;
+        }
+        Flags &= ~ImGuiWindowFlags.NoResize;
+        SizeCondition = _lmRestoreSize ? ImGuiCond.Always : ImGuiCond.FirstUseEver;
+        if (_lmRestoreSize)
+        {
+            Size = _lmExpandedSize;
+            _lmRestoreSize = false;
+        }
         SizeConstraints = new()
         {
             MinimumSize = new Vector2(900, 540) * ImGuiHelpers.GlobalScale,

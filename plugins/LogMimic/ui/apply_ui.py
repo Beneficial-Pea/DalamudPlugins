@@ -78,3 +78,6 @@ replace('Oracle/UI/ConfigWindow.cs', '        OracleWindowChrome.ApplyFixedSize(
 # Keep the loaded-preset indicator consistent with the icon palette.
 replace('Oracle/UI/ConfigWindow.cs', 'private static readonly Vector4 StandbyMatchGreen = new(0.45f, 0.85f, 0.45f, 1f);', 'private static readonly Vector4 StandbyMatchAccent = new(0.725f, 0.706f, 0.925f, 1f);')
 replace('Oracle/UI/ConfigWindow.Sidebar.cs', 'return StandbyMatchGreen;', 'return StandbyMatchAccent;')
+
+replace('Oracle/Configuration.cs', '    public bool LogMimicThemeApplied { get; set; }', '    public bool LogMimicThemeApplied { get; set; }\n    public bool LogMimicMinimized { get; set; }\n    public float LogMimicExpandedWidth { get; set; } = 1100;\n    public float LogMimicExpandedHeight { get; set; } = 720;')
+replace('Oracle/UI/ConfigWindow.cs', '        ConfigureLogMimicSize();\n        EnsureDefaultSelection();', '        InitializeLogMimicSize();\n        EnsureDefaultSelection();')
