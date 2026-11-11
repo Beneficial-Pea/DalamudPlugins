@@ -69,3 +69,8 @@ replace('Oracle/Configuration.cs', '    public bool LogMimicThemeApplied { get; 
 replace('Oracle/Plugin.cs', '        var timelineStore = new TimelineStore(configStore);', '        var timelineStore = new TimelineStore(configStore);\n        ReplayAutoLoad.MigrateOnce(timelineStore);')
 replace('Oracle/UI/FFLogsImportPanel.cs', '            if (replayAll) document.AutoLoadEnabled = false;', '            // Preserve the Auto Load checkbox chosen during import.')
 replace('Oracle/UI/ConfigWindow.cs', '        _store.MoveToEndOfZone(doc.Id);', '        if (doc.ReplayEnabled && doc.AutoLoadEnabled) ReplayAutoLoad.Select(_store, doc, true);\n        _store.MoveToEndOfZone(doc.Id);')
+
+# Allow native ImGui resizing and persist dimensions under the existing window ID.
+replace('Oracle/UI/ConfigWindow.cs', 'base("LogMimic###logmimicMain", ImGuiWindowFlags.NoDecoration)', 'base("LogMimic###logmimicMain", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar)')
+replace('Oracle/UI/ConfigWindow.cs', '        OracleWindowChrome.ApplyFixedSize(this, collapsed: false, new Vector2(1100f, 720f) * Dalamud.Interface.Utility.ImGuiHelpers.GlobalScale);', '        Size = new Vector2(1100f, 720f) * Dalamud.Interface.Utility.ImGuiHelpers.GlobalScale;\n        SizeCondition = ImGuiCond.FirstUseEver;\n        ConfigureLogMimicSize();')
+replace('Oracle/UI/ConfigWindow.cs', '        OracleWindowChrome.ApplyFixedSize(this, _chromeCollapsed, new Vector2(1100f, 720f) * Dalamud.Interface.Utility.ImGuiHelpers.GlobalScale);', '        ConfigureLogMimicSize();')

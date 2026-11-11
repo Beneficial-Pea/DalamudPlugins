@@ -9,6 +9,7 @@ internal sealed partial class ConfigWindow
     public LogMimicService? Replay { private get; set; }
     private string _lmPage = "home";
     private int _targetActorId;
+    private float _lmNavWidth;
     private static string L(string key) => I18n.Get("lm." + key);
 
     private void DrawLogMimic()
@@ -30,15 +31,21 @@ internal sealed partial class ConfigWindow
         MirageUi.Text("LOGMIMIC", MirageUi.Color.Title, fontSize: MirageUi.FontSize.Large);
         MirageUi.Text(L("tagline"), MirageUi.Color.Secondary);
         ImGui.EndGroup();
-        ImGui.SameLine(Math.Max(340 * scale, width - 320 * scale));
+        var style = ImGui.GetStyle();
+        var controlsWidth = ImGui.CalcTextSize("EN").X + ImGui.CalcTextSize("한국어").X
+            + ImGui.CalcTextSize("/lm").X + ImGui.CalcTextSize("X").X
+            + style.FramePadding.X * 6 + style.ItemSpacing.X * 3;
+        ImGui.SetCursorPos(new Vector2(width - 12 * scale - controlsWidth, 14 * scale));
         if (ImGui.Button("EN##lmLanguage")) I18n.SetLanguage("en");
         ImGui.SameLine();
         if (ImGui.Button("한국어##lmLanguage")) I18n.SetLanguage("ko");
         ImGui.SameLine();
+        ImGui.AlignTextToFramePadding();
         ImGui.TextDisabled("/lm");
         ImGui.SameLine();
         if (ImGui.Button("X##lmClose")) IsOpen = false;
         ImGui.SetCursorPos(new Vector2(20, 76) * scale);
+        _lmNavWidth = (width - 40 * scale - style.ItemSpacing.X * 6) / 7;
         Nav("home", "home"); ImGui.SameLine();
         Nav("library", "library"); ImGui.SameLine();
         Nav("import", "import"); ImGui.SameLine();
@@ -84,13 +91,36 @@ internal sealed partial class ConfigWindow
         }
         ImGui.SetCursorPos(new Vector2(20 * scale, ImGui.GetWindowSize().Y - 24 * scale));
         ImGui.TextDisabled("LogMimic  |  " + L("footer"));
+        DrawResizeGrip();
+    }
+
+    private void ConfigureLogMimicSize()
+    {
+        SizeConstraints = new()
+        {
+            MinimumSize = new Vector2(900, 540) * ImGuiHelpers.GlobalScale,
+            MaximumSize = new Vector2(float.MaxValue, float.MaxValue),
+        };
+    }
+
+    private static void DrawResizeGrip()
+    {
+        var scale = ImGuiHelpers.GlobalScale;
+        var corner = ImGui.GetWindowPos() + ImGui.GetWindowSize() - new Vector2(4 * scale);
+        var color = ImGui.GetColorU32(OracleTheme.Current.GetColor(MirageUi.Color.Accent));
+        var draw = ImGui.GetWindowDrawList();
+        for (var length = 4; length <= 12; length += 4)
+            draw.AddLine(corner - new Vector2(length * scale, 0),
+                corner - new Vector2(0, length * scale), color, Math.Max(1, scale));
+        if (ImGui.IsMouseHoveringRect(corner - new Vector2(18 * scale), corner))
+            ImGui.SetTooltip(L("resize"));
     }
 
     private void Nav(string id, string key)
     {
         using var color = ImRaii.PushColor(ImGuiCol.Button,
             _lmPage == id ? OracleTheme.Current.HeaderActive : OracleTheme.Current.FrameBg);
-        if (ImGui.Button(L(key) + "##lmNav" + id, new Vector2(130, 30) * ImGuiHelpers.GlobalScale))
+        if (ImGui.Button(L(key) + "##lmNav" + id, new Vector2(_lmNavWidth, 30 * ImGuiHelpers.GlobalScale)))
             _lmPage = id;
     }
 
