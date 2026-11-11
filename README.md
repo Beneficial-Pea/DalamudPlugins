@@ -8,7 +8,7 @@ Public custom plugin repository for FFXIV Dalamud.
 | --- | --- | --- |
 | **LogMimic** | Experimental source only | FFLogs action timeline replay based on Oracle; includes GCD/oGCD strict queue, target mapping, independent mitigation, and skill exclusions. |
 
-**Important:** LogMimic is **not yet built or tested in-game**. There is no verified installable DLL or released plugin available right now. The custom repository manifest stays empty until a build succeeds.
+**Status (2026-11-11):** The experimental LogMimic source **successfully compiled in GitHub Actions**, producing a review-only DLL artifact. It has **not been verified in-game or published as an installable release**. The custom repository manifest remains empty until release. See the [build run](https://github.com/Beneficial-Pea/dalamudplugins/actions/runs/43100774798) and [third-party notices](NOTICE.md).
 
 ## Planned Dalamud repository URL
 
