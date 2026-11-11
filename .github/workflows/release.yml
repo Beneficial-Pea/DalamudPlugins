@@ -1,6 +1,9 @@
 name: Build and publish LogMimic (experimental)
 
 on:
+  push:
+    branches: [main]
+    paths: ['release-version.txt']
   workflow_dispatch:
     inputs:
       version:
@@ -10,6 +13,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: logmimic-release
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -45,11 +52,17 @@ jobs:
         run: python tools/fix_oracle_anchor.py
 
       - name: Prepare source
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
         shell: pwsh
         run: |
-          $version = '${{ inputs.version }}'
+          $version = $env:REQUESTED_VERSION
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            $version = (Get-Content release-version.txt -Raw).Trim()
+          }
           if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Version must be X.Y.Z' }
           $env:BUILD_VERSION = "$version.0"
+          "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
           "BUILD_VERSION=$env:BUILD_VERSION" >> $env:GITHUB_ENV
           "BUILD_TAG=logmimic-v$version" >> $env:GITHUB_ENV
           python prepare_standalone.py upstream --repository $env:GITHUB_REPOSITORY --version $env:BUILD_VERSION
@@ -71,7 +84,10 @@ jobs:
       - name: Package build
         shell: pwsh
         run: |
-          python create_release_files.py upstream/Oracle/bin/Release --repository $env:GITHUB_REPOSITORY --version $env:BUILD_VERSION --tag $env:BUILD_TAG
+          $manifests = @(Get-ChildItem upstream/Oracle/bin/Release -Recurse -Filter LogMimic.json | Where-Object { Test-Path (Join-Path $_.DirectoryName 'LogMimic.dll') })
+          if ($manifests.Count -ne 1) { throw "Expected one plugin output directory, found $($manifests.Count)" }
+          python create_release_files.py $manifests[0].DirectoryName --repository $env:GITHUB_REPOSITORY --version $env:BUILD_VERSION --tag $env:BUILD_TAG
+          if ($LASTEXITCODE -ne 0) { throw 'Plugin packaging failed' }
 
       - name: Include upstream license and attribution in plugin archive
         shell: pwsh
@@ -83,12 +99,23 @@ jobs:
               archive.write("NOTICE.md", "NOTICE.md")
           '@ | python -
 
+      - name: Archive corresponding patched source
+        shell: pwsh
+        run: |
+          git -C upstream submodule status --recursive | Set-Content upstream/UPSTREAM-SUBMODULES.txt
+          git -C upstream rev-parse HEAD | Set-Content upstream/UPSTREAM-COMMIT.txt
+          tar --exclude=.git --exclude=bin --exclude=obj -czf dist/LogMimic-source.tar.gz -C upstream .
+          if ($LASTEXITCODE -ne 0) { throw 'Source archive failed' }
+
       - name: Publish release (only after a successful build)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.BUILD_TAG }}
-          name: LogMimic ${{ inputs.version }}
-          files: dist/latest.zip
+          name: LogMimic ${{ env.RELEASE_VERSION }}
+          body: 'Experimental build. In-game operation and Korean/global client compatibility have not been verified. Install only with a matching Dalamud API level.'
+          files: |
+            dist/latest.zip
+            dist/LogMimic-source.tar.gz
           fail_on_unmatched_files: true
 
       - name: Update Dalamud plugin list
@@ -97,7 +124,8 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add pluginmaster.json
-          if (!(git diff --cached --quiet)) {
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 1) {
             git commit -m "publish: LogMimic $env:BUILD_VERSION"
             git push origin HEAD:main
           }
