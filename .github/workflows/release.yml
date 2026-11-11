@@ -73,6 +73,16 @@ jobs:
         run: |
           python create_release_files.py upstream/Oracle/bin/Release --repository $env:GITHUB_REPOSITORY --version $env:BUILD_VERSION --tag $env:BUILD_TAG
 
+      - name: Include upstream license and attribution in plugin archive
+        shell: pwsh
+        run: |
+          @'
+          from zipfile import ZipFile, ZIP_DEFLATED
+          with ZipFile("dist/latest.zip", "a", compression=ZIP_DEFLATED) as archive:
+              archive.write("LICENSE", "LICENSE")
+              archive.write("NOTICE.md", "NOTICE.md")
+          '@ | python -
+
       - name: Publish release (only after a successful build)
         uses: softprops/action-gh-release@v2
         with:
