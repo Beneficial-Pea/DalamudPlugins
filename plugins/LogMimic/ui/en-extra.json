@@ -32,5 +32,6 @@
   "lm.support": "Questions? Discord: 달라살려 channel.",
   "lm.credits": "Based on Oracle v1.3.4 (AGPL-3.0-or-later). MirageUI is licensed under MIT. See LICENSE and NOTICE.md in the release.",
   "lm.experimental": "Experimental · Dalamud API 15. Korean and global client compatibility must be checked separately.",
-  "language.ko": "Korean"
+  "language.ko": "Korean",
+  "cmd.help.oracle": "Open LogMimic\n/lm config — Settings\n/lm replay list — List replay presets\n/lm replay load <name> — Load a replay preset\n/lm replay on|off|status — Replay controls\n/lm overlay timeline|major|icon — Toggle overlays\n/lm autorecord — Toggle recording\n/lm load <name> — Load a timeline\n/lm unload — Unload timeline\n/lm preview start [sec]|pause|stop — Preview\n/lm debug — Debug window"
 }

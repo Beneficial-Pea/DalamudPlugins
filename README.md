@@ -19,6 +19,12 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 - **스킬 제외:** 재생에 포함하고 싶지 않은 스킬을 프리셋별로 제외할 수 있습니다.
 - **수동 시작·중지:** 명령어로 재생을 켜고 끄며, 현재 상태를 확인할 수 있습니다.
 
+### 화면과 언어
+
+상단의 재생, 라이브러리, 로그 가져오기, 대상 매핑 탭에서 작업할 수 있습니다. 재생 화면에서는 불러온 프리셋과 현재 상태를 확인하고 재생을 켜거나 중지할 수 있습니다. 기존 타임라인 편집기는 라이브러리에 있습니다.
+
+오른쪽 위의 **EN / 한국어** 버튼으로 언어를 바꿀 수 있으며, 선택한 언어는 다음 실행에도 유지됩니다. 기본 명령어는 `/lm`입니다.
+
 ### 설치
 
 1. 게임에서 `/xlsettings`를 열고 **실험적 기능 / Experimental** 탭으로 이동합니다.
@@ -36,12 +42,12 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 | 명령어 | 설명 |
 | --- | --- |
-| `/logmimic` | 플러그인 창 열기 |
-| `/logmimic replay list` | 저장된 프리셋 목록 |
-| `/logmimic replay load <이름>` | 프리셋 불러오기 |
-| `/logmimic replay on` | 재생 허용 — 타임라인을 불러오고 실제 전투를 시작한 뒤 사용 |
-| `/logmimic replay off` | 재생 중지 |
-| `/logmimic replay status` | 현재 상태 확인 |
+| `/lm` | 플러그인 창 열기 |
+| `/lm replay list` | 저장된 프리셋 목록 |
+| `/lm replay load <이름>` | 프리셋 불러오기 |
+| `/lm replay on` | 재생 허용 — 타임라인을 불러오고 실제 전투를 시작한 뒤 사용 |
+| `/lm replay off` | 재생 중지 |
+| `/lm replay status` | 현재 상태 확인 |
 
 ### 한섭 / 글섭
 
@@ -66,6 +72,12 @@ This is an early experimental release. Installable builds are available, but beh
 - **Action exclusions:** Leave specific actions out of a preset.
 - **Manual controls:** Enable or pause replay and check its current status through commands.
 
+### Interface and language
+
+Use the top tabs for replay, your library, importing logs, and target mapping. The replay page shows the loaded preset and current status, with controls to enable or pause replay. The timeline editor is available in the library.
+
+Switch between English and Korean with the **EN / 한국어** buttons at the top right. Your selection is saved for the next session. Use `/lm` to open the plugin.
+
 ### Installation
 
 1. Open `/xlsettings` and go to the **Experimental** tab.
@@ -83,12 +95,12 @@ Adding the repository does not install the plugin automatically; the first insta
 
 | Command | Description |
 | --- | --- |
-| `/logmimic` | Open the plugin window |
-| `/logmimic replay list` | List saved presets |
-| `/logmimic replay load <name>` | Load a preset |
-| `/logmimic replay on` | Enable replay after loading a timeline and starting a real fight |
-| `/logmimic replay off` | Pause replay |
-| `/logmimic replay status` | Show the current status |
+| `/lm` | Open the plugin window |
+| `/lm replay list` | List saved presets |
+| `/lm replay load <name>` | Load a preset |
+| `/lm replay on` | Enable replay after loading a timeline and starting a real fight |
+| `/lm replay off` | Pause replay |
+| `/lm replay status` | Show the current status |
 
 ### Korean and global clients
 
