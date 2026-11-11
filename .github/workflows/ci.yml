@@ -42,6 +42,10 @@ jobs:
       - name: Apply LogMimic interface and localization
         shell: pwsh
         run: python plugins/LogMimic/ui/apply_ui.py upstream
+
+      - name: Verify Auto Load selection and migration
+        shell: pwsh
+        run: dotnet run --project plugins/LogMimic/ui/tests/AutoLoadChecks.csproj --configuration Release
       - name: Fetch Dalamud development libraries
         shell: pwsh
         run: |

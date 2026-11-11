@@ -116,6 +116,7 @@ internal sealed partial class ConfigWindow
         ImGui.TextWrapped(L("manual"));
         ImGui.Separator();
         MirageUi.Header(L("presets"));
+        ImGui.TextWrapped(L("autoload_help"));
         var presets = _store.Documents.Where(d => d.ReplayEnabled).ToList();
         if (presets.Count == 0)
         {
@@ -126,6 +127,16 @@ internal sealed partial class ConfigWindow
         {
             using var id = ImRaii.PushId(doc.Id);
             ImGui.TextUnformatted(doc.Name);
+            var autoLoad = doc.AutoLoadEnabled;
+            using (ImRaii.Disabled(doc.TerritoryTypeId == 0 || doc.ClassJobId == 0))
+            {
+                if (ImGui.Checkbox(L("autoload") + "##lmAutoLoad", ref autoLoad))
+                {
+                    ReplayAutoLoad.Select(_store, doc, autoLoad);
+                    if (!_engine.IsRunning) _engine.Unload();
+                }
+            }
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(L("autoload_help"));
             ImGui.SameLine();
             if (ImGui.SmallButton(L("load"))) Replay?.Command(["load", doc.Id]);
             ImGui.SameLine();

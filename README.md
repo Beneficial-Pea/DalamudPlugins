@@ -38,6 +38,12 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 저장소를 등록한 뒤 최초 설치는 직접 눌러야 합니다. 이후 새 버전은 Dalamud의 플러그인 업데이트 기능으로 받을 수 있습니다. 자동 업데이트를 사용하려면 런처나 Dalamud에서 해당 설정을 확인해 주세요.
 
+### 자동 불러오기
+
+재생 화면의 프리셋에서 **자동 불러오기**를 켜면 해당 지역과 직업에 맞는 타임라인을 자동으로 불러옵니다. 라이브러리에서 지역·직업을 확인하고, 같은 지역에서 보스나 페이즈를 구분해야 한다면 페이즈 프리셋도 지정하세요.
+
+같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **스킬 재생은 직접 켜야 합니다.**
+
 ### 기본 명령어
 
 | 명령어 | 설명 |
@@ -90,6 +96,12 @@ Switch between English and Korean with the **EN / 한국어** buttons at the top
 3. Open `/xlplugins`, search for `LogMimic` under **All Plugins**, and install it.
 
 Adding the repository does not install the plugin automatically; the first installation requires a click. Later releases are available through Dalamud's plugin updater. Automatic updates depend on your launcher and Dalamud settings.
+
+### Auto Load
+
+Enable **Auto Load** beside a preset on the replay page to load it when your zone and job match. Check the zone and job in the library; assign a phase preset when you need to distinguish bosses or phases within the same zone.
+
+Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **replay still requires manual enabling.**
 
 ### Commands
 

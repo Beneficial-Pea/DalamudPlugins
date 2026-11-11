@@ -63,3 +63,9 @@ apply(root, assets)
 replace('Oracle/UI/ConfigWindow.cs', '    public void SelectImportedTimeline(TimelineDocument doc)\n    {', '    public void SelectImportedTimeline(TimelineDocument doc)\n    {\n        _lmPage = "library";')
 
 replace("Oracle/UI/DebugWindow.cs", '"Oracle Debug"', '"LogMimic Debug"')
+# Reuse Oracle's region/job/phase matching. Only preset loading is automatic.
+shutil.copyfile(assets / 'ReplayAutoLoad.cs', root / 'Oracle/Services/ReplayAutoLoad.cs')
+replace('Oracle/Configuration.cs', '    public bool LogMimicThemeApplied { get; set; }', '    public bool LogMimicThemeApplied { get; set; }\n    public bool LogMimicAutoLoadMigrated { get; set; }')
+replace('Oracle/Plugin.cs', '        var timelineStore = new TimelineStore(configStore);', '        var timelineStore = new TimelineStore(configStore);\n        ReplayAutoLoad.MigrateOnce(timelineStore);')
+replace('Oracle/UI/FFLogsImportPanel.cs', '            if (replayAll) document.AutoLoadEnabled = false;', '            // Preserve the Auto Load checkbox chosen during import.')
+replace('Oracle/UI/ConfigWindow.cs', '        _store.MoveToEndOfZone(doc.Id);', '        if (doc.ReplayEnabled && doc.AutoLoadEnabled) ReplayAutoLoad.Select(_store, doc, true);\n        _store.MoveToEndOfZone(doc.Id);')
