@@ -23,7 +23,7 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 상단의 재생, 라이브러리, 로그 가져오기, 대상 매핑 탭에서 작업할 수 있습니다. 재생 화면에서는 불러온 프리셋과 현재 상태를 확인하고 재생을 켜거나 중지할 수 있습니다. 기존 타임라인 편집기는 라이브러리에 있습니다.
 
-오른쪽 위의 **EN / 한국어** 버튼으로 언어를 바꿀 수 있으며, 선택한 언어는 다음 실행에도 유지됩니다. 기본 명령어는 `/lm`입니다. 오른쪽 아래 모서리를 드래그해 창 크기를 조절할 수 있으며, 바꾼 크기는 다음에 열 때도 유지됩니다.
+오른쪽 위의 **EN / 한국어** 버튼으로 언어를 바꿀 수 있으며, 선택한 언어는 다음 실행에도 유지됩니다. 기본 명령어는 `/lm`입니다. 오른쪽 아래 모서리를 드래그해 창 크기를 조절할 수 있으며, 바꾼 크기는 다음에 열 때도 유지됩니다. 상단 로고는 표시하지 않으며, 최소화하면 제목과 버튼만 남는 작은 바로 줄어듭니다. 플러그인 목록과 README의 아이콘은 바깥 검은 배경을 투명하게 하고 여백을 줄였습니다.
 
 ### 설치
 
@@ -40,7 +40,7 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 ### 자동 불러오기
 
-재생 화면의 프리셋에서 **자동 불러오기**를 켜면 해당 지역과 직업에 맞는 타임라인을 자동으로 불러옵니다. 라이브러리에서 지역·직업을 확인하고, 같은 지역에서 보스나 페이즈를 구분해야 한다면 페이즈 프리셋도 지정하세요.
+**설정 → LogMimic → 자동 불러오기**에서 설정된 모든 프리셋의 자동 불러오기를 한 번에 켜거나 끌 수 있습니다. 기본으로 켜져 있으며, 지역·직업·페이즈 매칭은 유지합니다. 프리셋 목록은 라이브러리에서 관리합니다. 라이브러리에서 지역·직업을 확인하고, 같은 지역에서 보스나 페이즈를 구분해야 한다면 페이즈 프리셋도 지정하세요.
 
 같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **초읽기 자동 재생**이 켜져 있으면 초읽기 동안 대기하고 0초가 되면 재생을 시작합니다. 기본 설정에서는 첫 스킬을 0초에 맞추고 이후 스킬 간 간격을 유지합니다. 초읽기 취소 시 전투 전 재생을 멈추며, 사망해도 재생을 중지합니다. 직접 중지한 경우 같은 초읽기에서는 자동으로 다시 켜지지 않습니다.
 
@@ -104,7 +104,7 @@ This is an early experimental release. Installable builds are available, but beh
 
 Use the top tabs for replay, your library, importing logs, and target mapping. The replay page shows the loaded preset and current status, with controls to enable or pause replay. The timeline editor is available in the library.
 
-Switch between English and Korean with the **EN / 한국어** buttons at the top right. Your selection is saved for the next session. Use `/lm` to open the plugin. Drag the bottom-right corner to resize the window; its size is retained when you reopen it.
+Switch between English and Korean with the **EN / 한국어** buttons at the top right. Your selection is saved for the next session. Use `/lm` to open the plugin. Drag the bottom-right corner to resize the window; its size is retained when you reopen it. The header omits the logo, and minimizing produces a small bar with just the title and controls. The plugin-list and README icon has a transparent exterior and reduced padding.
 
 ### Installation
 
@@ -121,7 +121,7 @@ Adding the repository does not install the plugin automatically; the first insta
 
 ### Auto Load
 
-Enable **Auto Load** beside a preset on the replay page to load it when your zone and job match. Check the zone and job in the library; assign a phase preset when you need to distinguish bosses or phases within the same zone.
+Use **Settings → LogMimic → Auto Load** to enable or disable automatic loading for all configured presets. It is enabled by default, and zone, job and phase matching still apply. Manage presets in the Library. Check the zone and job in the library; assign a phase preset when you need to distinguish bosses or phases within the same zone.
 
 Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **countdown auto-start** waits during a fresh countdown and enables replay at 0s. By default the first action is aligned to 0s and the recorded intervals are retained. Cancelling the countdown before combat or dying pauses replay. Manually pausing prevents the same countdown from restarting it.
 

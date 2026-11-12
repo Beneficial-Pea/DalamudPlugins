@@ -1,5 +1,4 @@
 using Dalamud.Interface.Utility;
-using Dalamud.Interface.Textures;
 using Oracle.Models;
 
 namespace Oracle.UI;
@@ -21,17 +20,7 @@ internal sealed partial class ConfigWindow
         var width = ImGui.GetWindowSize().X;
         var wasMinimized = _lmMinimized;
         if (!_lmMinimized) _lmExpandedSize = ImGui.GetWindowSize();
-        ImGui.SetCursorPos(new Vector2(20, 14) * scale);
-        var icon = MirageUi.PluginInfo.IconPath;
-        if (!string.IsNullOrEmpty(icon))
-        {
-            var texture = PluginServices.TextureProvider.GetFromFile(icon).GetWrapOrDefault();
-            if (texture != null)
-            {
-                ImGui.Image(texture.Handle, new Vector2(44, 44) * scale);
-                ImGui.SameLine();
-            }
-        }
+        ImGui.SetCursorPos(new Vector2(16, 10) * scale);
         ImGui.BeginGroup();
         MirageUi.Text("LOGMIMIC", MirageUi.Color.Title, fontSize: MirageUi.FontSize.Large);
         ImGui.EndGroup();
@@ -40,7 +29,7 @@ internal sealed partial class ConfigWindow
             + ImGui.CalcTextSize("/lm").X + ImGui.CalcTextSize("X").X
             + ImGui.CalcTextSize(_lmMinimized ? "+" : "-").X
             + style.FramePadding.X * 8 + style.ItemSpacing.X * 4;
-        ImGui.SetCursorPos(new Vector2(width - 12 * scale - controlsWidth, 14 * scale));
+        ImGui.SetCursorPos(new Vector2(width - 12 * scale - controlsWidth, 10 * scale));
         if (ImGui.Button("EN##lmLanguage")) I18n.SetLanguage("en");
         ImGui.SameLine();
         if (ImGui.Button("한국어##lmLanguage")) I18n.SetLanguage("ko");
@@ -53,7 +42,7 @@ internal sealed partial class ConfigWindow
         ImGui.SameLine();
         if (ImGui.Button("X##lmClose")) IsOpen = false;
         if (_lmMinimized || wasMinimized) return;
-        ImGui.SetCursorPos(new Vector2(20, 76) * scale);
+        ImGui.SetCursorPos(new Vector2(20, 44) * scale);
         _lmNavWidth = (width - 40 * scale - style.ItemSpacing.X * 5) / 6;
         Nav("home", "home"); ImGui.SameLine();
         Nav("library", "library"); ImGui.SameLine();
@@ -61,10 +50,10 @@ internal sealed partial class ConfigWindow
         Nav("targets", "targets"); ImGui.SameLine();
         Nav("settings", "settings"); ImGui.SameLine();
         Nav("about", "about");
-        ImGui.SetCursorPos(new Vector2(0, 116) * scale);
+        ImGui.SetCursorPos(new Vector2(0, 84) * scale);
         ImGui.Separator();
-        var bodyHeight = Math.Max(80 * scale, ImGui.GetWindowSize().Y - 150 * scale);
-        ImGui.SetCursorPos(new Vector2(0, 128) * scale);
+        var bodyHeight = Math.Max(80 * scale, ImGui.GetWindowSize().Y - 118 * scale);
+        ImGui.SetCursorPos(new Vector2(0, 96) * scale);
         using (var body = ImRaii.Child("##lmBody", new Vector2(0, bodyHeight), false))
         {
             if (body)
@@ -130,7 +119,7 @@ internal sealed partial class ConfigWindow
         if (_lmMinimized)
         {
             Flags |= ImGuiWindowFlags.NoResize;
-            var compact = new Vector2(_lmExpandedSize.X, 68 * ImGuiHelpers.GlobalScale);
+            var compact = new Vector2(400, 42) * ImGuiHelpers.GlobalScale;
             Size = compact;
             SizeCondition = ImGuiCond.Always;
             SizeConstraints = new() { MinimumSize = compact, MaximumSize = compact };
@@ -199,38 +188,6 @@ internal sealed partial class ConfigWindow
         if (ImGui.Button(L("import") + "##lmQuickImport")) _lmPage = "import";
         ImGui.Spacing();
         ImGui.TextWrapped(L("manual"));
-        ImGui.Separator();
-        MirageUi.Header(L("presets"));
-        ImGui.TextWrapped(L("autoload_help"));
-        var presets = _store.Documents.Where(d => d.ReplayEnabled).ToList();
-        if (presets.Count == 0)
-        {
-            ImGui.TextWrapped(L("empty"));
-            return;
-        }
-        foreach (var doc in presets)
-        {
-            using var id = ImRaii.PushId(doc.Id);
-            ImGui.TextUnformatted(doc.Name);
-            var autoLoad = doc.AutoLoadEnabled;
-            using (ImRaii.Disabled(doc.TerritoryTypeId == 0 || doc.ClassJobId == 0))
-            {
-                if (ImGui.Checkbox(L("autoload") + "##lmAutoLoad", ref autoLoad))
-                {
-                    ReplayAutoLoad.Select(_store, doc, autoLoad);
-                    if (!_engine.IsRunning) _engine.Unload();
-                }
-            }
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip(L("autoload_help"));
-            ImGui.SameLine();
-            if (ImGui.SmallButton(L("load"))) Replay?.Command(["load", doc.Id]);
-            ImGui.SameLine();
-            if (ImGui.SmallButton(L("edit")))
-            {
-                OnSidebarSelectionChanged(TimelinePageId(doc.Id));
-                _lmPage = "library";
-            }
-        }
     }
 
     private void DrawReplayFeedbackSettings()

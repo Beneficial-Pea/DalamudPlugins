@@ -87,3 +87,6 @@ apply_countdown_replay(root, assets)
 
 from add_replay_feedback import apply as apply_replay_feedback
 apply_replay_feedback(root, assets)
+
+from simplify_workspace import apply as apply_workspace
+apply_workspace(root, assets)
