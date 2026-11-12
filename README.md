@@ -13,10 +13,12 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 
 - **로그 재생:** FFLogs에서 가져온 스킬 기록을 프리셋으로 저장하고 재생합니다.
 - **자동 불러오기:** 지역·직업·페이즈에 맞는 프리셋을 불러옵니다.
-- **초읽기 자동 시작:** 0초부터 첫 스킬을 시도하고, 이후 스킬 간 간격을 유지합니다.
+- **초읽기 자동 시작:** 0초부터 현재 캐릭터의 글쿨에 맞춰 스킬을 재생합니다.
 - **대상 매칭:** 기록된 대상을 자동으로 찾습니다. 같은 적이 여러 마리라면 그중 직접 선택한 적을 사용합니다.
 - **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
-- **재생 표시:** 단축바 눌림 모션과 상태 패널로 다음 스킬, 사용 요청·확인을 표시합니다. 상태 패널은 현재 지역·직업·페이즈가 불러온 프리셋과 일치할 때만 나타납니다.
+- **글쿨·논글쿨 분리:** 글쿨 순서는 유지하고, 사용 가능한 논글쿨을 사이에 넣습니다. 생존기 하나가 대기해도 다른 스킬을 막지 않습니다.
+- **페이즈 대기:** 로그의 긴 대기 구간은 전투 시간을 유지합니다. 해당 구간에 동기화 신호를 설정했다면 실제 전투 신호를 기다립니다.
+- **재생 표시:** 단축바 눌림 모션과 게임 정보바의 `LM: ON/OFF`로 재생 상태를 확인합니다.
 
 ### 설치
 
@@ -39,9 +41,9 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 
 **자동 재생은 초읽기 0초부터 시작합니다. 0초 이전에 쓰는 오프닝은 직접 사용해야 합니다.**
 
-전체 자동 불러오기, 단축바 클릭 모션, 첫 스킬 0초 맞추기는 **설정 → LogMimic**에서 바꿀 수 있습니다. 사망하면 재생이 중지됩니다.
+전체 자동 불러오기, 단축바 클릭 모션, **현재 글쿨에 맞춰 재생**은 **설정 → LogMimic**에서 바꿀 수 있습니다. 글쿨 맞춤을 끄면 원래 기록 시각대로 재생합니다. 별도 타이머로 지정한 생존기·보조 스킬은 전투 시간을 유지하며, 사망하면 재생이 중지됩니다.
 
-게임 정보바의 **LM: ON/OFF**를 왼쪽 클릭하면 재생을 켜거나 중지합니다. 오른쪽 클릭하면 로그미믹 창이 열립니다. 재생을 켜려면 프리셋을 불러오고 초읽기 또는 전투를 시작한 상태여야 합니다.
+게임 정보바의 **LM: ON/OFF**를 왼쪽 클릭하면 재생을 켜거나 중지합니다. 오른쪽 클릭하면 로그미믹 창이 열립니다. 마우스를 올리면 대기 중인 스킬과 마지막 사용 확인을 볼 수 있습니다. 재생을 켜려면 프리셋을 불러오고 초읽기 또는 전투를 시작한 상태여야 합니다.
 
 ### 명령어
 
@@ -68,10 +70,12 @@ A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and re
 
 - **Log replay:** Save imported action records as presets and replay them.
 - **Auto Load:** Load presets that match your zone, job and phase.
-- **Countdown start:** Attempt the first action at 0s and keep the recorded intervals between actions.
+- **Countdown start:** Begin at 0s and follow your character's current GCD.
 - **Target matching:** Find the recorded target automatically. When several matching enemies are present, use the one you select.
 - **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
-- **Replay feedback:** Show native hotbar presses, upcoming actions, requests and confirmations. The status panel appears only when your current zone, job and phase match the loaded preset.
+- **Separate GCDs and abilities:** Preserve GCD order and weave usable abilities between them. One unavailable mitigation does not block other actions.
+- **Phase timing:** Long recorded gaps retain encounter time. Where a sync cue is configured for that gap, wait for the actual encounter signal.
+- **Replay feedback:** Show native hotbar presses and `LM: ON/OFF` in the server info bar.
 
 ### Installation
 
@@ -94,9 +98,9 @@ The first installation requires a click after adding the repository. Later versi
 
 **Automatic replay starts at countdown 0s. Use any opener or preparation actions before 0s manually.**
 
-The global Auto Load switch, hotbar button presses and first-action alignment are under **Settings → LogMimic**. Death pauses replay.
+The global Auto Load switch, hotbar button presses and **Follow my current GCD** are under **Settings → LogMimic**. Disable GCD matching to use original timestamps. Explicit independent utility and mitigation timers retain encounter time. Death pauses replay.
 
-Left-click **LM: ON/OFF** in the server info bar to enable or pause replay. Right-click it to open LogMimic. Enabling replay requires a loaded replay preset and an active countdown or combat timeline.
+Left-click **LM: ON/OFF** in the server info bar to enable or pause replay. Right-click it to open LogMimic, or hover to see waiting actions and the last confirmed use. Enabling replay requires a loaded replay preset and an active countdown or combat timeline.
 
 ### Commands
 

@@ -11,6 +11,8 @@ internal sealed class ReplayFeedbackLog
     public ReplayActionFeedback? LastConfirmed { get; private set; }
     public IReadOnlyList<ReplayActionFeedback> History => _history;
     public uint LastGameStatus { get; set; }
+    public bool MatchesRequest(string cueId, uint actionId) =>
+        _pending.TryGetValue(cueId, out var request) && request.ActionId == actionId;
     public void Reset()
     {
         _pending.Clear(); _history.Clear(); LastRequest = null; LastConfirmed = null; LastGameStatus = 0;

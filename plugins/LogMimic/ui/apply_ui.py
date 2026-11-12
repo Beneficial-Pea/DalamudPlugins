@@ -99,3 +99,6 @@ replace('Oracle/UI/ConfigWindow.cs', '        ImGui.PopStyleVar();', '        Im
 
 from add_replay_dtr import apply as apply_dtr
 apply_dtr(root, assets)
+
+from adapt_replay import apply as apply_adaptive
+apply_adaptive(root, assets)

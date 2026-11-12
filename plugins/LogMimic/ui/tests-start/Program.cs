@@ -125,3 +125,4 @@ var earlyEnd = new NativeCountdownSignals();
 earlyEnd.Observe(true,0.1f,1000);
 Check(earlyEnd.Observe(false,0,1016).ClockRemaining == null, "Do not move the timeline to zero before the sampled deadline");
 Console.WriteLine("Native countdown start, zero synchronization, cancellation and clock continuation checks passed.");
+AdaptiveChecks.Run();

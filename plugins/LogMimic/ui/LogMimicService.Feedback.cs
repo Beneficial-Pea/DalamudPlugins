@@ -15,8 +15,10 @@ internal sealed unsafe partial class LogMimicService
     public string LoadedPresetName => _engine.ActiveDocument?.Name ?? I18n.Get("lm.none");
     public float ClockSeconds => _engine.ElapsedSeconds;
     private float PlaybackElapsed => _engine.ElapsedSeconds + _playbackOffset;
-    public TimelineCue? NextMainCue => _mainIndex < _main.Count ? _main[_mainIndex] : PreviewCue();
-    public float NextPlannedAt => NextMainCue is { } cue ? Scheduled(cue) - (_doc != null ? _playbackOffset : PreviewOffset()) : 0;
+    public TimelineCue? NextMainCue => _adaptiveMode ? AdaptiveNextCue()
+        : _mainIndex < _main.Count ? _main[_mainIndex] : PreviewCue();
+    public float NextPlannedAt => _adaptiveMode ? ClockSeconds
+        : NextMainCue is { } cue ? Scheduled(cue) - (_doc != null ? _playbackOffset : PreviewOffset()) : 0;
     private static float Scheduled(TimelineCue cue) => ReplayPacing.Scheduled(cue.TimeOffsetSec, cue.ReplayStartOffsetSec);
     private TimelineCue? PreviewCue()
     {

@@ -6,4 +6,6 @@
   <ItemGroup><Compile Include="../ReplayCastTiming.cs" Link="ReplayCastTiming.cs" /><Compile Include="../ReplayFeedbackLog.cs" Link="ReplayFeedbackLog.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayClickSequence.cs" Link="ReplayClickSequence.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../NativeCountdownSignals.cs" Link="NativeCountdownSignals.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../ReplayAdaptiveQueue.cs" Link="ReplayAdaptiveQueue.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../ReplayPhasePlan.cs" Link="ReplayPhasePlan.cs" /></ItemGroup>
 </Project>

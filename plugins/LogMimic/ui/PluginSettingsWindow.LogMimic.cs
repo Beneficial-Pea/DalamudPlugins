@@ -23,6 +23,16 @@ internal sealed partial class PluginSettingsWindow
         }
         using (ImRaii.Disabled(TimelineIsRunning))
         {
+            var adaptive = C.ReplayFollowCurrentGcd;
+            if (ImGui.Checkbox(I18n.Get("adaptive.enable"), ref adaptive))
+            {
+                C.ReplayFollowCurrentGcd = adaptive;
+                C.Save();
+            }
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(I18n.Get("adaptive.help"));
+        }
+        using (ImRaii.Disabled(TimelineIsRunning || C.ReplayFollowCurrentGcd))
+        {
             var align = C.ReplayAlignFirstActionToZero;
             if (ImGui.Checkbox(I18n.Get("feedback.align"), ref align))
             {

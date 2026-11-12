@@ -182,7 +182,6 @@ internal sealed partial class ConfigWindow
     private void DrawReplayHome()
     {
         MirageUi.Header(L("session"));
-        DrawReplayFeedbackSettings();
         var autoStart = C.ReplayAutoStartOnCountdown;
         if (ImGui.Checkbox(L("auto_start"), ref autoStart))
         {
@@ -207,12 +206,6 @@ internal sealed partial class ConfigWindow
         if (ImGui.Button(L("import") + "##lmQuickImport")) _lmPage = "import";
         ImGui.Spacing();
         ImGui.TextWrapped(L("manual"));
-    }
-
-    private void DrawReplayFeedbackSettings()
-    {
-        var show = C.ReplayShowFeedback;
-        if (ImGui.Checkbox(I18n.Get("feedback.show"), ref show)) { C.ReplayShowFeedback = show; C.Save(); }
     }
 
     private static void DrawFollowTargetToggle()
