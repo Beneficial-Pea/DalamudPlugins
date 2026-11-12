@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Oracle.Services;
 
-internal readonly record struct CountdownSignal(bool Started, bool Cancelled, float Remaining);
+internal readonly record struct CountdownSignal(bool Started, bool Cancelled, float Remaining, float? ClockRemaining = null);
 
 internal sealed class CountdownSignals
 {

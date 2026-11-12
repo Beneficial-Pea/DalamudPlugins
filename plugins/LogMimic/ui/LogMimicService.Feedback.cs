@@ -4,6 +4,7 @@ namespace Oracle.Services;
 internal sealed unsafe partial class LogMimicService
 {
     private float _playbackOffset;
+    public HotbarHighlightService? HotbarFeedback { get; set; }
     public ReplayFeedbackLog Feedback { get; } = new();
     public bool HasAnyReplayPreset => _store.Documents.Any(d => d.ReplayEnabled);
     public bool ReplayClockRunning => _engine.IsRunning && !_engine.IsPreview;
@@ -26,6 +27,7 @@ internal sealed unsafe partial class LogMimicService
         _playbackOffset = ReplayPacing.AlignmentOffset(C.ReplayAlignFirstActionToZero,
             _main.Concat(_independent).Select(Scheduled));
         Feedback.Reset();
+        HotbarFeedback?.ClearReplayClicks();
         _lastAttempt = 0;
     }
     private string IdleReplayState()

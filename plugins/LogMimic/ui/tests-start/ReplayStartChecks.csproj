@@ -4,4 +4,6 @@
   <ItemGroup><Compile Include="../NpcNameIndex.cs" Link="NpcNameIndex.cs" /><None Include="../BNpcNames.en.json.gz" Link="BNpcNames.en.json.gz" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayTargetChoice.cs" Link="ReplayTargetChoice.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayCastTiming.cs" Link="ReplayCastTiming.cs" /><Compile Include="../ReplayFeedbackLog.cs" Link="ReplayFeedbackLog.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../ReplayClickSequence.cs" Link="ReplayClickSequence.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../NativeCountdownSignals.cs" Link="NativeCountdownSignals.cs" /></ItemGroup>
 </Project>

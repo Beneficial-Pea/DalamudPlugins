@@ -9,7 +9,7 @@ def apply(root, assets):
         if s.count(old) != 1:
             raise RuntimeError(f'Countdown patch anchor: {path}: {old[:90]} ({s.count(old)})')
         p.write_text(s.replace(old, new), encoding='utf-8')
-    for name in ['ReplayStartGate.cs', 'CountdownSignals.cs']:
+    for name in ['ReplayStartGate.cs', 'CountdownSignals.cs', 'NativeCountdownSignals.cs']:
         shutil.copyfile(assets / name, root / 'Oracle/Services' / name)
     shutil.copyfile(assets / 'CountdownSyncDetector.cs', root / 'Oracle/Services/Sync/CountdownSyncDetector.cs')
     rep('Oracle/Configuration.cs', '    public int Version { get; set; } = 1;', '    public int Version { get; set; } = 1;\n    public bool ReplayAutoStartOnCountdown { get; set; } = true;')
@@ -18,6 +18,13 @@ def apply(root, assets):
     rep(engine, '        _previewMode = preview;\n        Activate(doc, clockOffset);', '        IsCountdownSession = false;\n        _previewMode = preview;\n        Activate(doc, clockOffset);')
     rep(engine, '    private void StopClock()\n    {', '    private void StopClock()\n    {\n        IsCountdownSession = false;')
     rep(engine, '        _countdown.Update();\n        if (!_countdown.JustStarted)', '        _countdown.Update();\n        if (_countdown.JustCancelled && IsCountdownSession && !_combat.InCombat)\n            StopClock();\n        if (!_countdown.JustStarted)')
+    rep(engine, '        if (!_countdown.JustStarted)\n            return;', '''        if (IsCountdownSession && _running && !_previewMode && _countdown.ClockRemaining is { } remaining)
+        {
+            _syncUtc = DateTime.UtcNow;
+            _clockOffset = -remaining;
+        }
+        if (!_countdown.JustStarted)
+            return;''')
     rep(engine, '        StartClock(_activeDoc, -Math.Abs(_countdown.StartedRemaining), preview: false);', '        if (_combat.InCombat) return;\n        StartClock(_activeDoc, -Math.Abs(_countdown.StartedRemaining), preview: false);\n        CountdownSequence++;\n        IsCountdownSession = true;')
     svc = 'Oracle/Services/LogMimicService.cs'
     rep(svc, '    private bool _suspended = true;', '    private bool _suspended = true;\n    private long _replayCountdownSequence = -1;\n    private readonly ReplayStartGate _autoStart = new();')

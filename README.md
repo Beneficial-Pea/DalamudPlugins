@@ -42,7 +42,7 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 재생 화면의 프리셋에서 **자동 불러오기**를 켜면 해당 지역과 직업에 맞는 타임라인을 자동으로 불러옵니다. 라이브러리에서 지역·직업을 확인하고, 같은 지역에서 보스나 페이즈를 구분해야 한다면 페이즈 프리셋도 지정하세요.
 
-같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **초읽기 자동 재생**이 켜져 있으면 초읽기 동안 대기하고 0초가 되면 재생을 시작합니다. 각 스킬은 0초 이후의 원래 기록 시각대로 사용합니다. 초읽기 취소 시 전투 전 재생을 멈추며, 사망해도 재생을 중지합니다. 직접 중지한 경우 같은 초읽기에서는 자동으로 다시 켜지지 않습니다.
+같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **초읽기 자동 재생**이 켜져 있으면 초읽기 동안 대기하고 0초가 되면 재생을 시작합니다. 기본 설정에서는 첫 스킬을 0초에 맞추고 이후 스킬 간 간격을 유지합니다. 초읽기 취소 시 전투 전 재생을 멈추며, 사망해도 재생을 중지합니다. 직접 중지한 경우 같은 초읽기에서는 자동으로 다시 켜지지 않습니다.
 
 ### 재생 시작 시점과 대상 표시
 
@@ -58,11 +58,11 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 ### 재생 상태와 스킬 표시
 
-재생 화면에서 **재생 상태 패널 표시**와 **단축바에 스킬 요청·사용 확인 표시**를 켤 수 있습니다. 둘 다 기본으로 켜져 있습니다. 상태 패널은 재생 시작 전에도 표시되며, 프리셋 매칭 여부·현재 타임라인·다음 스킬의 예정 시각·가장 최근 요청과 사용 확인을 보여줍니다. 패널은 드래그해 옮길 수 있습니다.
+재생 화면에서 **재생 상태 패널 표시**와 **단축바 클릭 모션 표시**를 켤 수 있습니다. 둘 다 기본으로 켜져 있습니다. 상태 패널은 재생 시작 전에도 표시되며, 프리셋 매칭 여부·현재 타임라인·다음 스킬의 예정 시각·가장 최근 요청과 사용 확인을 보여줍니다. 패널은 드래그해 옮길 수 있습니다.
 
-단축바의 보라색 점멸은 사용 요청이 게임에 받아들여졌다는 뜻이며, 흰색 점멸은 서버의 사용 확인을 받은 표시입니다. 요청 성공만으로 실제 사용 완료를 표시하지 않습니다. 사용 확인 시각에는 시전 시간과 통신 지연이 포함될 수 있습니다.
+게임이 스킬 사용 요청을 받아들이면 RSR에서도 사용하는 게임 기본 단축바 눌림 모션을 재생합니다. 일반 단축바와 크로스 단축바의 해당 스킬 버튼에 짧은 클릭 모션이 표시되며, 다음 스킬은 테두리로 표시합니다. 사용 요청과 서버의 사용 확인은 상태 패널에서 따로 확인할 수 있습니다. 요청이 받아들여져도 실제 사용이 완료된 것은 아니며, 사용 확인 시각에는 시전 시간과 통신 지연이 포함될 수 있습니다.
 
-**첫 기록 스킬을 0초에 맞추기**는 기본적으로 꺼져 있습니다. 켜면 스킬 간 간격을 유지하며 첫 스킬을 0초로 앞당깁니다. 끄면 로그의 원래 시각을 유지하므로 첫 기록이 0.4초라면 0.4초까지 기다립니다. 초읽기 전에 설정하세요.
+**첫 기록 스킬을 0초에 맞추기**는 기본으로 켜져 있습니다. 기존 설정에도 0.4.1 업데이트에서 한 번 적용하며, 이후 선택은 유지합니다. 스킬 간 간격을 유지하면서 첫 스킬을 초읽기 0초에 맞춥니다. 게임의 실제 초읽기 남은 시간을 직접 읽어 타임라인을 맞추며, 이 정보를 읽을 수 없을 때는 채팅 메시지를 사용합니다. 대상·거리·쿨다운 등의 사용 조건이 맞아야 스킬이 나갑니다. 원래 기록 시각을 그대로 쓰고 싶으면 이 옵션을 끄세요. 초읽기 전에 설정하면 됩니다.
 
 새로 가져오는 로그는 실제 시전 시작 기록이 있으면 그 시각을 재생에 사용합니다. 시작 기록이 없으면 완료 기록의 시각을 유지합니다. 이 보정을 기존 프리셋에 적용하려면 로그를 다시 가져오세요. 자동 대상 매칭은 이름 ID와 클라이언트의 정확한 현지화 이름을 함께 비교합니다.
 
@@ -123,7 +123,7 @@ Adding the repository does not install the plugin automatically; the first insta
 
 Enable **Auto Load** beside a preset on the replay page to load it when your zone and job match. Check the zone and job in the library; assign a phase preset when you need to distinguish bosses or phases within the same zone.
 
-Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **countdown auto-start** waits during a fresh countdown and enables replay at 0s. Each action retains its recorded time after 0s. Cancelling the countdown before combat or dying pauses replay. Manually pausing prevents the same countdown from restarting it.
+Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **countdown auto-start** waits during a fresh countdown and enables replay at 0s. By default the first action is aligned to 0s and the recorded intervals are retained. Cancelling the countdown before combat or dying pauses replay. Manually pausing prevents the same countdown from restarting it.
 
 ### Replay timing and recorded targets
 
@@ -139,11 +139,11 @@ An action already due and waiting for a target resumes on the next replay update
 
 ### Replay feedback and action timing
 
-The Replay page has **Show replay status panel** and **Show replay requests and confirmations on hotbars**, both enabled by default. The draggable panel is visible before replay begins and shows preset matching, timeline time, the next planned action, and the latest request and confirmation.
+The Replay page has **Show replay status panel** and **Show native hotbar button presses**, both enabled by default. The draggable panel is visible before replay begins and shows preset matching, timeline time, the next planned action, and the latest request and confirmation.
 
-A violet hotbar pulse means the game accepted an action request; a white pulse means a server action confirmation was observed. Accepting a queued request is not displayed as a completed action. Confirmation timestamps can include cast duration and network delay.
+When the game accepts an action request, LogMimic plays the native hotbar keypress animation also used by Rotation Solver Reborn. Matching buttons on visible normal and cross hotbars show a short press sequence; the next action retains an outline. Requests and server confirmations are listed separately in the status panel. An accepted request is not a completed action; confirmation timestamps can include cast duration and network delay.
 
-**Align the first recorded action to 0s** is off by default. Enabling it shifts the first action to zero while retaining the intervals between actions. With it disabled, original timestamps are kept, so an action logged at 0.4s waits until 0.4s. Configure this before the countdown.
+**Align the first recorded action to 0s** is enabled by default. Version 0.4.1 enables it once for existing settings; later choices are retained. It shifts the first action to countdown zero while keeping the intervals between actions. The timeline reads the native countdown agent and uses chat as a fallback when that agent is unavailable. Actions still require a valid target, range and cooldown. Disable this option to preserve original timestamps. Configure it before the countdown.
 
 New imports use an actual cast-start record where one is available. Without one, the completed cast timestamp is preserved. Re-import older presets to apply this correction. NPC matching now also compares exact localized client names when a name-ID match is unavailable.
 
@@ -166,6 +166,6 @@ For questions and support, please use the **달라살려** channel on Discord. F
 
 ## Credits & License
 
-LogMimic is based on [Oracle v1.3.4](https://github.com/exatrines/Oracle) and uses MirageUI. Oracle-derived code is licensed under **AGPL-3.0-or-later**; MirageUI has its own MIT license. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md). Each installable release includes an archive of the corresponding patched source.
+LogMimic is based on [Oracle v1.3.4](https://github.com/exatrines/Oracle) and uses MirageUI. The native action-use and hotbar keypress paths were checked against [Rotation Solver Reborn](https://github.com/FFXIV-CombatReborn/RotationSolverReborn); timeline scheduling remains based on Oracle. Oracle-derived code is licensed under **AGPL-3.0-or-later**; MirageUI has its own MIT license. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md). Each installable release includes an archive of the corresponding patched source.
 
 Automated combat may violate FFXIV's terms of service.

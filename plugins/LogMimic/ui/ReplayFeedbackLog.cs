@@ -29,8 +29,4 @@ internal sealed class ReplayFeedbackLog
         _history.Insert(0, item);
         if (_history.Count > 5) _history.RemoveAt(_history.Count - 1);
     }
-    public uint RequestPulse(long now) => LastRequest is { } request && now - request.RequestTick is >= 0 and < 350
-        ? request.ActionId : 0;
-    public uint ConfirmPulse(long now) => LastConfirmed is { } confirmation && now - confirmation.ConfirmTick is >= 0 and < 550
-        ? confirmation.ActionId : 0;
 }
