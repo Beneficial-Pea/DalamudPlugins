@@ -12,6 +12,7 @@ internal sealed partial class ConfigWindow
     private bool _lmMinimized;
     private bool _lmRestoreSize;
     private Vector2 _lmExpandedSize;
+    private float _lmHeaderHeight = 22f;
     private static string L(string key) => I18n.Get("lm." + key);
 
     private void DrawLogMimic()
@@ -20,29 +21,11 @@ internal sealed partial class ConfigWindow
         var width = ImGui.GetWindowSize().X;
         var wasMinimized = _lmMinimized;
         if (!_lmMinimized) _lmExpandedSize = ImGui.GetWindowSize();
-        ImGui.SetCursorPos(new Vector2(16, 10) * scale);
-        ImGui.BeginGroup();
-        MirageUi.Text("LOGMIMIC", MirageUi.Color.Title, fontSize: MirageUi.FontSize.Large);
-        ImGui.EndGroup();
-        var style = ImGui.GetStyle();
-        var controlsWidth = ImGui.CalcTextSize("EN").X + ImGui.CalcTextSize("한국어").X
-            + ImGui.CalcTextSize("/lm").X + ImGui.CalcTextSize("X").X
-            + ImGui.CalcTextSize(_lmMinimized ? "+" : "-").X
-            + style.FramePadding.X * 8 + style.ItemSpacing.X * 4;
-        ImGui.SetCursorPos(new Vector2(width - 12 * scale - controlsWidth, 10 * scale));
-        if (ImGui.Button("EN##lmLanguage")) I18n.SetLanguage("en");
-        ImGui.SameLine();
-        if (ImGui.Button("한국어##lmLanguage")) I18n.SetLanguage("ko");
-        ImGui.SameLine();
-        ImGui.AlignTextToFramePadding();
-        ImGui.TextDisabled("/lm");
-        ImGui.SameLine();
-        if (ImGui.Button((_lmMinimized ? "+" : "-") + "##lmMinimize")) ToggleLogMimicMinimize();
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip(L(_lmMinimized ? "restore" : "minimize"));
-        ImGui.SameLine();
-        if (ImGui.Button("X##lmClose")) IsOpen = false;
+        var headerHeight = DrawLogMimicHeader(width, scale);
         if (_lmMinimized || wasMinimized) return;
-        ImGui.SetCursorPos(new Vector2(20, 44) * scale);
+        var style = ImGui.GetStyle();
+        var navTop = headerHeight + 2 * scale;
+        ImGui.SetCursorPos(new Vector2(20 * scale, navTop));
         _lmNavWidth = (width - 40 * scale - style.ItemSpacing.X * 5) / 6;
         Nav("home", "home"); ImGui.SameLine();
         Nav("library", "library"); ImGui.SameLine();
@@ -50,10 +33,11 @@ internal sealed partial class ConfigWindow
         Nav("targets", "targets"); ImGui.SameLine();
         Nav("settings", "settings"); ImGui.SameLine();
         Nav("about", "about");
-        ImGui.SetCursorPos(new Vector2(0, 84) * scale);
+        ImGui.SetCursorPos(new Vector2(0, navTop + 40 * scale));
         ImGui.Separator();
-        var bodyHeight = Math.Max(80 * scale, ImGui.GetWindowSize().Y - 118 * scale);
-        ImGui.SetCursorPos(new Vector2(0, 96) * scale);
+        var bodyTop = navTop + 52 * scale;
+        var bodyHeight = Math.Max(80 * scale, ImGui.GetWindowSize().Y - bodyTop - 22 * scale);
+        ImGui.SetCursorPos(new Vector2(0, bodyTop));
         using (var body = ImRaii.Child("##lmBody", new Vector2(0, bodyHeight), false))
         {
             if (body)
@@ -98,6 +82,38 @@ internal sealed partial class ConfigWindow
         DrawResizeGrip();
     }
 
+    private float DrawLogMimicHeader(float width, float scale)
+    {
+        using var padding = ImRaii.PushStyle(ImGuiStyleVar.FramePadding, new Vector2(4, 1) * scale);
+        using var spacing = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(4, 0) * scale);
+        var rowHeight = ImGui.GetFrameHeight();
+        var height = MathF.Ceiling(Math.Max(20 * scale, rowHeight + 4 * scale));
+        _lmHeaderHeight = height / scale;
+        var rowY = MathF.Floor((height - rowHeight) * 0.5f);
+        ImGui.SetCursorPos(new Vector2(12 * scale, rowY));
+        ImGui.AlignTextToFramePadding();
+        ImGui.TextColored(OracleTheme.Current.GetColor(MirageUi.Color.Title), "LOGMIMIC");
+
+        var style = ImGui.GetStyle();
+        var controlsWidth = ImGui.CalcTextSize("EN").X + ImGui.CalcTextSize("한국어").X
+            + ImGui.CalcTextSize("/lm").X + ImGui.CalcTextSize("X").X
+            + ImGui.CalcTextSize(_lmMinimized ? "+" : "-").X
+            + style.FramePadding.X * 8 + style.ItemSpacing.X * 4;
+        ImGui.SetCursorPos(new Vector2(width - 8 * scale - controlsWidth, rowY));
+        if (ImGui.Button("EN##lmLanguage")) I18n.SetLanguage("en");
+        ImGui.SameLine();
+        if (ImGui.Button("한국어##lmLanguage")) I18n.SetLanguage("ko");
+        ImGui.SameLine();
+        ImGui.AlignTextToFramePadding();
+        ImGui.TextDisabled("/lm");
+        ImGui.SameLine();
+        if (ImGui.Button((_lmMinimized ? "+" : "-") + "##lmMinimize")) ToggleLogMimicMinimize();
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(L(_lmMinimized ? "restore" : "minimize"));
+        ImGui.SameLine();
+        if (ImGui.Button("X##lmClose")) IsOpen = false;
+        return height;
+    }
+
     private void InitializeLogMimicSize()
     {
         _lmMinimized = C.LogMimicMinimized;
@@ -122,7 +138,7 @@ internal sealed partial class ConfigWindow
         if (_lmMinimized)
         {
             Flags |= ImGuiWindowFlags.NoResize;
-            var compact = new Vector2(400, 42) * ImGuiHelpers.GlobalScale;
+            var compact = new Vector2(_lmExpandedSize.X, _lmHeaderHeight * ImGuiHelpers.GlobalScale);
             Size = compact;
             SizeCondition = ImGuiCond.Always;
             SizeConstraints = new() { MinimumSize = compact, MaximumSize = compact };

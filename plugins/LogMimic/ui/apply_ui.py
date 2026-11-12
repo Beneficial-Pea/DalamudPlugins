@@ -90,3 +90,9 @@ apply_replay_feedback(root, assets)
 
 from simplify_workspace import apply as apply_workspace
 apply_workspace(root, assets)
+
+# Native ImGui's minimum height must also allow a thin minimized title strip.
+replace('Oracle/UI/ConfigWindow.cs',
+        '        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);',
+        '        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);\n        var minSize = ImGui.GetStyle().WindowMinSize;\n        if (_lmMinimized) minSize.Y = 1f;\n        ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, minSize);')
+replace('Oracle/UI/ConfigWindow.cs', '        ImGui.PopStyleVar();', '        ImGui.PopStyleVar(2);')
