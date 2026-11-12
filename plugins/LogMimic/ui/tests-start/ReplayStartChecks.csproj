@@ -8,4 +8,11 @@
   <ItemGroup><Compile Include="../NativeCountdownSignals.cs" Link="NativeCountdownSignals.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayAdaptiveQueue.cs" Link="ReplayAdaptiveQueue.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayPhasePlan.cs" Link="ReplayPhasePlan.cs" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="../ReplayPotionSettings.cs" Link="ReplayPotionSettings.cs" />
+    <Compile Include="../ReplayPotionPolicy.cs" Link="ReplayPotionPolicy.cs" />
+    <Compile Include="../ReplayPotionIds.cs" Link="ReplayPotionIds.cs" />
+    <Compile Include="../../../../upstream/Oracle/Models/TimelineModels.cs" Link="TimelineModels.cs" />
+    <Compile Include="../../../../upstream/Oracle/Services/TimelineJson.cs" Link="TimelineJson.cs" />
+  </ItemGroup>
 </Project>

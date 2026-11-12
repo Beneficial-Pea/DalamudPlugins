@@ -15,6 +15,7 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 - **자동 불러오기:** 지역·직업·페이즈에 맞는 프리셋을 불러옵니다.
 - **초읽기 자동 시작:** 0초부터 현재 캐릭터의 글쿨에 맞춰 스킬을 재생합니다.
 - **대상 매칭:** 기록된 대상을 자동으로 찾습니다. 같은 적이 여러 마리라면 그중 직접 선택한 적을 사용합니다.
+- **탕약 선택:** 가져올 때 탕약 포함 여부와 종류·품질을 고릅니다. 자동 선택은 직업에 맞는 소지 탕약을 사용하며, 없거나 사용할 수 없으면 건너뜁니다.
 - **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
 - **글쿨·논글쿨 분리:** 글쿨 순서는 유지하고, 사용 가능한 논글쿨을 사이에 넣습니다. 생존기 하나가 대기해도 다른 스킬을 막지 않습니다.
 - **페이즈 대기:** 로그의 긴 대기 구간은 전투 시간을 유지합니다. 해당 구간에 동기화 신호를 설정했다면 실제 전투 신호를 기다립니다.
@@ -72,6 +73,7 @@ A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and re
 - **Auto Load:** Load presets that match your zone, job and phase.
 - **Countdown start:** Begin at 0s and follow your character's current GCD.
 - **Target matching:** Find the recorded target automatically. When several matching enemies are present, use the one you select.
+- **Potion selection:** Choose whether to include potions, plus the item and quality. Auto selection uses an owned potion for your job; missing or unusable items are skipped.
 - **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
 - **Separate GCDs and abilities:** Preserve GCD order and weave usable abilities between them. One unavailable mitigation does not block other actions.
 - **Phase timing:** Long recorded gaps retain encounter time. Where a sync cue is configured for that gap, wait for the actual encounter signal.

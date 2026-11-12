@@ -25,3 +25,7 @@ The `LogMimic_SourceKit.zip` patch source plus Oracle v1.3.4 checkout (including
 ## English NPC name index
 
 The compressed BNpcName index is derived from xivapi/ffxiv-datamining English game data. Game names belong to Square Enix. See Data/NPC_DATA_SOURCE.md in the plugin package and plugins/LogMimic/ui/NPC_DATA_SOURCE.md in this repository for the pinned source and transformation.
+
+## Stat-potion identification
+
+`ReplayPotionIds.cs` contains item IDs and English names from the XIVAPI v2 Item sheet, queried with `ItemSearchCategory=43 FilterGroup=6` and restricted to the five primary-stat medicines. It identifies recorded potions absent from an older client. Display names, selectable items and inventory use come from the installed client's sheets. Potion classification and native item use reference Rotation Solver Reborn's `MedicineItem` and `BaseItem` implementations.

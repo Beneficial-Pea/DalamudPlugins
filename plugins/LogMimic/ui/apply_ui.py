@@ -102,3 +102,6 @@ apply_dtr(root, assets)
 
 from adapt_replay import apply as apply_adaptive
 apply_adaptive(root, assets)
+
+from add_replay_potions import apply as apply_potions
+apply_potions(root, assets)
