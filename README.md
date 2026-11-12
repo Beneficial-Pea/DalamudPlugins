@@ -37,6 +37,8 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 2. **로그 가져오기**에서 보고서 URL을 넣고 전투와 플레이어를 선택해 가져옵니다.
 3. **라이브러리**에서 프리셋의 지역·직업과 자동 불러오기 설정을 확인합니다. **초읽기 종료(0초) 시 자동 재생**을 켜면 초읽기 0초부터 재생을 시작합니다.
 
+**자동 재생은 초읽기 0초부터 시작합니다. 0초 이전에 쓰는 준비 스킬·오프닝은 직접 사용해야 합니다.**
+
 전체 자동 불러오기, 단축바 클릭 모션, 첫 스킬 0초 맞추기는 **설정 → LogMimic**에서 바꿀 수 있습니다. 사망하면 재생이 중지됩니다.
 
 ### 명령어
@@ -87,6 +89,8 @@ The first installation requires a click after adding the repository. Later versi
 1. Open `/lm` and enter your Client ID and Client Secret in the FFLogs settings. Create them in [FFLogs API settings](https://www.fflogs.com/api/clients).
 2. Under **Import logs**, enter a report URL and select the fight and player to import.
 3. Check the preset's zone, job and Auto Load settings in the **Library**. Enable **Automatically replay at countdown 0s** to begin replay at 0s.
+
+**Automatic replay starts at countdown 0s. Use any opener or preparation actions before 0s manually.**
 
 The global Auto Load switch, hotbar button presses and first-action alignment are under **Settings → LogMimic**. Death pauses replay.
 
