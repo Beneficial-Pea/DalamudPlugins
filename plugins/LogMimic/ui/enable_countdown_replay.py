@@ -61,7 +61,7 @@ def apply(root, assets):
         var selectedTarget = PluginServices.TargetManager.Target;
         var selectedSnapshot = selectedTarget == null ? (SelectedReplayTarget?)null : new SelectedReplayTarget(
             selectedTarget.GameObjectId,
-            selectedTarget is IBattleNpc { BattleNpcKind: BattleNpcSubKind.Enemy },
+            selectedTarget is IBattleNpc enemy && (enemy.StatusFlags & StatusFlags.Hostile) != 0,
             selectedTarget.IsDead,
             selectedTarget.IsTargetable);
         var selection = ReplayTargetChoice.Choose(C.ReplayFollowSelectedEnemy, cue.ReplayTargetKind, selectedSnapshot);
