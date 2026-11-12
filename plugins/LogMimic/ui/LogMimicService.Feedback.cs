@@ -10,7 +10,7 @@ internal sealed unsafe partial class LogMimicService
     public bool ReplayClockRunning => _engine.IsRunning && !_engine.IsPreview;
     private bool HasMatchingFeedbackPreset => _engine.ActiveDocument is { ReplayEnabled: true } doc
         && _engine.MatchesLiveZone(doc) && _engine.MatchesLiveJob(doc) && _engine.MatchesLivePreset(doc);
-    public bool IsFeedbackContextActive => ReplayClockRunning && HasMatchingFeedbackPreset;
+    public bool IsFeedbackContextActive => HasMatchingFeedbackPreset;
     public string LoadedPresetName => _engine.ActiveDocument?.Name ?? I18n.Get("lm.none");
     public float ClockSeconds => _engine.ElapsedSeconds;
     private float PlaybackElapsed => _engine.ElapsedSeconds + _playbackOffset;
