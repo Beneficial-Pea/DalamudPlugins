@@ -81,3 +81,6 @@ replace('Oracle/UI/ConfigWindow.Sidebar.cs', 'return StandbyMatchGreen;', 'retur
 
 replace('Oracle/Configuration.cs', '    public bool LogMimicThemeApplied { get; set; }', '    public bool LogMimicThemeApplied { get; set; }\n    public bool LogMimicMinimized { get; set; }\n    public float LogMimicExpandedWidth { get; set; } = 1100;\n    public float LogMimicExpandedHeight { get; set; } = 720;')
 replace('Oracle/UI/ConfigWindow.cs', '        ConfigureLogMimicSize();\n        EnsureDefaultSelection();', '        InitializeLogMimicSize();\n        EnsureDefaultSelection();')
+
+from enable_countdown_replay import apply as apply_countdown_replay
+apply_countdown_replay(root, assets)

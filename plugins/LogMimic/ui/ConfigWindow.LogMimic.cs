@@ -175,6 +175,12 @@ internal sealed partial class ConfigWindow
     private void DrawReplayHome()
     {
         MirageUi.Header(L("session"));
+        var autoStart = C.ReplayAutoStartOnCountdown;
+        if (ImGui.Checkbox(L("auto_start"), ref autoStart))
+        {
+            C.ReplayAutoStartOnCountdown = autoStart;
+            C.Save();
+        }
         ImGui.TextWrapped(L("intro"));
         ImGui.Spacing();
         var active = _engine.ActiveDocument;
@@ -192,6 +198,8 @@ internal sealed partial class ConfigWindow
         if (ImGui.Button(L("import") + "##lmQuickImport")) _lmPage = "import";
         ImGui.Spacing();
         ImGui.TextWrapped(L("manual"));
+        if (active is { ReplayEnabled: true } && !active.Cues.Any(c => c.TimeOffsetSec < 0 && c.ActionId != 0))
+            ImGui.TextWrapped(L("prep_missing"));
         ImGui.Separator();
         MirageUi.Header(L("presets"));
         ImGui.TextWrapped(L("autoload_help"));

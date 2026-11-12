@@ -75,6 +75,10 @@ jobs:
         shell: pwsh
         run: dotnet run --project plugins/LogMimic/ui/tests/AutoLoadChecks.csproj --configuration Release
 
+      - name: Verify countdown replay and preparation timing
+        shell: pwsh
+        run: dotnet run --project plugins/LogMimic/ui/tests-start/ReplayStartChecks.csproj --configuration Release
+
       - name: Download Dalamud assemblies
         shell: pwsh
         run: |

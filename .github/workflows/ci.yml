@@ -46,6 +46,10 @@ jobs:
       - name: Verify Auto Load selection and migration
         shell: pwsh
         run: dotnet run --project plugins/LogMimic/ui/tests/AutoLoadChecks.csproj --configuration Release
+
+      - name: Verify countdown replay and preparation timing
+        shell: pwsh
+        run: dotnet run --project plugins/LogMimic/ui/tests-start/ReplayStartChecks.csproj --configuration Release
       - name: Fetch Dalamud development libraries
         shell: pwsh
         run: |
