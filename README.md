@@ -1,5 +1,3 @@
-# [<img src="https://raw.githubusercontent.com/Beneficial-Pea/DalamudPlugins/main/plugins/LogMimic/icon.png" width="96" height="96" alt="LogMimic">](https://github.com/Beneficial-Pea/DalamudPlugins)
-
 **LogMimic · 로그미믹**
 
 [![Release](https://img.shields.io/github/v/release/Beneficial-Pea/DalamudPlugins?label=release)](https://github.com/Beneficial-Pea/DalamudPlugins/releases)
