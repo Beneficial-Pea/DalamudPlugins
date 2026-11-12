@@ -1,171 +1,114 @@
-# [<img src="https://raw.githubusercontent.com/Beneficial-Pea/DalamudPlugins/main/plugins/LogMimic/icon.png" width="80" height="80" alt="LogMimic icon">](https://github.com/Beneficial-Pea/DalamudPlugins) LogMimic
+# [<img src="https://raw.githubusercontent.com/Beneficial-Pea/DalamudPlugins/main/plugins/LogMimic/icon.png" width="96" height="96" alt="LogMimic">](https://github.com/Beneficial-Pea/DalamudPlugins)
 
-[![Latest release](https://img.shields.io/github/v/release/Beneficial-Pea/DalamudPlugins?label=release)](https://github.com/Beneficial-Pea/DalamudPlugins/releases)
+**LogMimic · 로그미믹**
+
+[![Release](https://img.shields.io/github/v/release/Beneficial-Pea/DalamudPlugins?label=release)](https://github.com/Beneficial-Pea/DalamudPlugins/releases)
 [![Downloads](https://img.shields.io/github/downloads/Beneficial-Pea/DalamudPlugins/total)](https://github.com/Beneficial-Pea/DalamudPlugins/releases)
+
 [한국어](#한국어) · [English](#english)
 
 ## 한국어
 
-LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안에서 타임라인으로 재생하는 FFXIV Dalamud 플러그인입니다. Oracle을 기반으로 만들었으며, 로그에 기록된 스킬 순서와 사용 대상을 따라가는 기능을 개발하고 있습니다.
-
-현재는 초기 실험 버전입니다. 설치용 빌드는 제공하지만, 실제 전투에서의 동작과 한섭·글섭 호환성은 아직 검증하지 않았습니다.
+FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 파이널판타지 XIV 달라무드 플러그인입니다.
 
 ### 주요 기능
 
-- **FFLogs 타임라인:** 가져온 로그를 직업별·로그별 프리셋으로 저장하고 불러옵니다.
-- **GCD / oGCD 순서 유지:** 메인 스킬 대기열은 정해진 순서대로 처리합니다.
-- **대상 매핑:** 로그에 기록된 대상을 게임 안의 대상과 연결할 수 있습니다.
-- **별도 스킬 타이머:** 지정한 생존기나 보조 스킬은 메인 대기열과 따로 처리합니다.
-- **스킬 제외:** 재생에 포함하고 싶지 않은 스킬을 프리셋별로 제외할 수 있습니다.
-- **수동 시작·중지:** 명령어로 재생을 켜고 끄며, 현재 상태를 확인할 수 있습니다.
-
-### 화면과 언어
-
-상단의 재생, 라이브러리, 로그 가져오기, 대상 매핑 탭에서 작업할 수 있습니다. 재생 화면에서는 불러온 프리셋과 현재 상태를 확인하고 재생을 켜거나 중지할 수 있습니다. 기존 타임라인 편집기는 라이브러리에 있습니다.
-
-오른쪽 위의 **EN / 한국어** 버튼으로 언어를 바꿀 수 있으며, 선택한 언어는 다음 실행에도 유지됩니다. 기본 명령어는 `/lm`입니다. 오른쪽 아래 모서리를 드래그해 창 크기를 조절할 수 있으며, 바꾼 크기는 다음에 열 때도 유지됩니다. 상단 로고는 표시하지 않으며, 최소화하면 제목과 버튼만 남는 작은 바로 줄어듭니다. 플러그인 목록과 README의 아이콘은 바깥 검은 배경을 투명하게 하고 여백을 줄였습니다.
+- **로그 재생:** FFLogs에서 가져온 스킬 기록을 프리셋으로 저장하고 재생합니다.
+- **자동 불러오기:** 지역·직업·페이즈에 맞는 프리셋을 불러옵니다.
+- **초읽기 자동 시작:** 0초부터 첫 스킬을 시도하고, 이후 스킬 간 간격을 유지합니다.
+- **대상 매칭:** 기록된 대상을 자동으로 찾습니다. 같은 적이 여러 마리라면 그중 직접 선택한 적을 사용합니다.
+- **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
+- **재생 표시:** 단축바 눌림 모션과 상태 패널로 다음 스킬, 사용 요청·확인을 표시합니다.
 
 ### 설치
 
-1. 게임에서 `/xlsettings`를 열고 **실험적 기능 / Experimental** 탭으로 이동합니다.
-2. 사용자 지정 플러그인 저장소에 아래 주소를 추가하고 활성화한 뒤 저장합니다.
+1. `/xlsettings` → **실험적 기능 / Experimental**을 엽니다.
+2. 사용자 지정 플러그인 저장소에 아래 주소를 추가하고, 체크한 뒤 저장합니다.
 
    ```text
    https://raw.githubusercontent.com/Beneficial-Pea/DalamudPlugins/main/pluginmaster.json
    ```
 
-3. `/xlplugins`를 열고 **모든 플러그인**에서 `LogMimic`을 검색해 설치합니다.
+3. `/xlplugins`에서 **LogMimic**을 검색해 설치합니다.
 
-저장소를 등록한 뒤 최초 설치는 직접 눌러야 합니다. 이후 새 버전은 Dalamud의 플러그인 업데이트 기능으로 받을 수 있습니다. 자동 업데이트를 사용하려면 런처나 Dalamud에서 해당 설정을 확인해 주세요.
+저장소를 추가한 뒤 최초 설치는 직접 눌러야 합니다. 이후에는 달라무드의 플러그인 업데이트로 받을 수 있습니다.
 
-### 자동 불러오기
+### 사용 방법
 
-**설정 → LogMimic → 자동 불러오기**에서 설정된 모든 프리셋의 자동 불러오기를 한 번에 켜거나 끌 수 있습니다. 기본으로 켜져 있으며, 지역·직업·페이즈 매칭은 유지합니다. 프리셋 목록은 라이브러리에서 관리합니다. 라이브러리에서 지역·직업을 확인하고, 같은 지역에서 보스나 페이즈를 구분해야 한다면 페이즈 프리셋도 지정하세요.
+1. `/lm`을 열고 **설정 → FFLogs 연결**에 Client ID와 Client Secret을 입력합니다. [FFLogs API 설정](https://www.fflogs.com/api/clients)에서 발급받을 수 있습니다.
+2. **로그 가져오기**에서 보고서 URL을 넣고 전투와 플레이어를 선택해 가져옵니다.
+3. **라이브러리**에서 프리셋의 지역·직업과 자동 불러오기 설정을 확인합니다. **초읽기 종료(0초) 시 자동 재생**을 켜면 초읽기 0초부터 재생을 시작합니다.
 
-같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **초읽기 자동 재생**이 켜져 있으면 초읽기 동안 대기하고 0초가 되면 재생을 시작합니다. 기본 설정에서는 첫 스킬을 0초에 맞추고 이후 스킬 간 간격을 유지합니다. 초읽기 취소 시 전투 전 재생을 멈추며, 사망해도 재생을 중지합니다. 직접 중지한 경우 같은 초읽기에서는 자동으로 다시 켜지지 않습니다.
+전체 자동 불러오기, 단축바 클릭 모션, 첫 스킬 0초 맞추기는 **설정 → LogMimic**에서 바꿀 수 있습니다. 사망하면 재생이 중지됩니다.
 
-### 재생 시작 시점과 대상 표시
+### 명령어
 
-초읽기 종료(0초) 시 자동 재생을 켜면 0초부터 시작합니다. 수동으로 재생을 켜도 초읽기 중에는 스킬을 사용하지 않습니다. 새 로그는 전투 시작 이후 기록을 가져오며, 기존 프리셋의 음수 시간 항목도 재생에서 제외합니다. 로그를 다시 가져오지 않아도 기존 0초 이후 항목은 사용할 수 있습니다.
-
-라이브러리의 스킬명 옆에는 로그에 기록된 대상을 표시합니다. 영문 몬스터명은 BNpcName 이름 ID로 변환해 현재 클라이언트의 대상과 비교하며, 표시 이름은 가능하면 설치된 클라이언트의 언어를 사용합니다. 같은 이름 ID의 몬스터가 여러 마리라면 아래의 중복 대상 선택 옵션을 쓰거나 대상 매핑에서 직접 지정하세요. 다른 로그의 플레이어 대상은 별도로 연결해야 할 수 있습니다. 이름 인덱스의 출처는 [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md)에 있습니다.
-
-### 자동 타깃팅과 중복 대상 선택
-
-로그 대상이 한 마리로 매칭되면 자동으로 그 대상을 사용합니다. 같은 이름·이름 ID의 적이 여러 마리라면 **같은 적이 여러 마리면 현재 선택한 대상 사용** 옵션으로 그중 직접 선택한 개체를 공격할 수 있습니다. 이 옵션은 기본으로 켜져 있습니다.
-
-기록 시각이 되어 대상 때문에 기다리던 스킬은 일치하는 적을 선택하면 다음 재생 업데이트에서 재개합니다. 아직 기록 시각이 되지 않은 스킬은 앞당겨 사용하지 않습니다. 다른 종류의 적이나 죽은·선택할 수 없는 적은 후보에 포함하지 않습니다. 직접 연결한 대상은 매핑 설정을 우선하며, 자신·아군 대상 스킬은 원래 대상을 유지합니다. 이미 요청한 스킬은 이전 대상으로 나갈 수 있습니다. 라이브러리의 이름은 로그에 기록된 원래 대상입니다.
-
-### 재생 상태와 스킬 표시
-
-재생 화면에서는 **재생 상태 패널 표시**를 켜거나 끌 수 있습니다. **단축바 클릭 모션 표시**와 **첫 기록 스킬을 0초에 맞추기**는 **설정 → LogMimic**에서 바꿀 수 있으며, 기존 선택은 유지됩니다. 상태 패널은 재생 시작 전에도 표시되며, 프리셋 매칭 여부·현재 타임라인·다음 스킬의 예정 시각·가장 최근 요청과 사용 확인을 보여줍니다. 패널은 드래그해 옮길 수 있습니다.
-
-게임이 스킬 사용 요청을 받아들이면 RSR에서도 사용하는 게임 기본 단축바 눌림 모션을 재생합니다. 일반 단축바와 크로스 단축바의 해당 스킬 버튼에 짧은 클릭 모션이 표시되며, 다음 스킬은 테두리로 표시합니다. 사용 요청과 서버의 사용 확인은 상태 패널에서 따로 확인할 수 있습니다. 요청이 받아들여져도 실제 사용이 완료된 것은 아니며, 사용 확인 시각에는 시전 시간과 통신 지연이 포함될 수 있습니다.
-
-**첫 기록 스킬을 0초에 맞추기**는 기본으로 켜져 있습니다. 기존 설정에도 0.4.1 업데이트에서 한 번 적용하며, 이후 선택은 유지합니다. 스킬 간 간격을 유지하면서 첫 스킬을 초읽기 0초에 맞춥니다. 게임의 실제 초읽기 남은 시간을 직접 읽어 타임라인을 맞추며, 이 정보를 읽을 수 없을 때는 채팅 메시지를 사용합니다. 대상·거리·쿨다운 등의 사용 조건이 맞아야 스킬이 나갑니다. 원래 기록 시각을 그대로 쓰고 싶으면 이 옵션을 끄세요. 초읽기 전에 설정하면 됩니다.
-
-새로 가져오는 로그는 실제 시전 시작 기록이 있으면 그 시각을 재생에 사용합니다. 시작 기록이 없으면 완료 기록의 시각을 유지합니다. 이 보정을 기존 프리셋에 적용하려면 로그를 다시 가져오세요. 자동 대상 매칭은 이름 ID와 클라이언트의 정확한 현지화 이름을 함께 비교합니다.
-
-### 기본 명령어
-
-| 명령어 | 설명 |
+| 명령어 | 기능 |
 | --- | --- |
-| `/lm` | 플러그인 창 열기 |
-| `/lm replay list` | 저장된 프리셋 목록 |
-| `/lm replay load <이름>` | 프리셋 불러오기 |
-| `/lm replay on` | 수동 재생 허용 — 타임라인을 불러오고 초읽기 또는 전투를 시작한 뒤 사용 |
+| `/lm` | 메인 창 열기 |
+| `/lm config` | 설정 열기 |
+| `/lm replay on` | 수동 재생 켜기 — 타임라인이 시작된 상태에서 사용 |
 | `/lm replay off` | 재생 중지 |
-| `/lm replay status` | 현재 상태 확인 |
 
-### 한섭 / 글섭
+### 문의
 
-두 클라이언트 지원을 목표로 개발하고 있습니다. 현재 빌드는 **Dalamud API 15**를 대상으로 하며, 사용하는 Dalamud와 API 버전이 다르면 목록에 표시되지 않거나 실행할 수 없습니다. 버전 숫자만 바꿔서는 호환되지 않으므로 클라이언트별 확인이 필요합니다.
+디스코드 **달라살려** 채널에 남겨 주세요. 오류가 나면 사용 중인 서버와 달라무드 버전, 재현 상황을 함께 알려 주세요.
 
-문의는 디스코드 **달라살려** 채널에 남겨 주세요. 오류 문의 시 사용 중인 서버, 게임·Dalamud 버전, 재현 방법과 관련 로그를 함께 알려 주시면 확인에 도움이 됩니다. 로그를 올리기 전 개인정보나 인증 정보가 포함되어 있지 않은지 확인해 주세요.
+현재 **Dalamud API 15** 기준의 테스트 버전입니다. 한섭·글섭 지원을 목표로 개발 중이며, 실제 전투 동작과 클라이언트별 호환성은 확인이 필요합니다.
 
 ---
 
 ## English
 
-LogMimic is a Dalamud plugin for FFXIV that imports action records from FFLogs and replays them as in-game timelines. Built on Oracle, it is being developed to follow the action order and targets recorded in a log.
-
-This is an early experimental release. Installable builds are available, but behavior in actual combat and compatibility with the Korean and global clients have not been verified.
+A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and replays their action order and timing.
 
 ### Features
 
-- **FFLogs timelines:** Save and load separate presets for different jobs and logs.
-- **GCD / oGCD ordering:** Process the main action queue in its recorded order.
-- **Target mapping:** Bind targets from the log to targets in the game.
-- **Independent timers:** Handle selected mitigation and utility actions separately from the main queue.
-- **Action exclusions:** Leave specific actions out of a preset.
-- **Manual controls:** Enable or pause replay and check its current status through commands.
-
-### Interface and language
-
-Use the top tabs for replay, your library, importing logs, and target mapping. The replay page shows the loaded preset and current status, with controls to enable or pause replay. The timeline editor is available in the library.
-
-Switch between English and Korean with the **EN / 한국어** buttons at the top right. Your selection is saved for the next session. Use `/lm` to open the plugin. Drag the bottom-right corner to resize the window; its size is retained when you reopen it. The header omits the logo, and minimizing produces a small bar with just the title and controls. The plugin-list and README icon has a transparent exterior and reduced padding.
+- **Log replay:** Save imported action records as presets and replay them.
+- **Auto Load:** Load presets that match your zone, job and phase.
+- **Countdown start:** Attempt the first action at 0s and keep the recorded intervals between actions.
+- **Target matching:** Find the recorded target automatically. When several matching enemies are present, use the one you select.
+- **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
+- **Replay feedback:** Show native hotbar presses, upcoming actions, requests and confirmations.
 
 ### Installation
 
-1. Open `/xlsettings` and go to the **Experimental** tab.
-2. Add the following custom plugin repository, enable it, and save:
+1. Open `/xlsettings` → **Experimental**.
+2. Add this custom plugin repository, enable it, and save:
 
    ```text
    https://raw.githubusercontent.com/Beneficial-Pea/DalamudPlugins/main/pluginmaster.json
    ```
 
-3. Open `/xlplugins`, search for `LogMimic` under **All Plugins**, and install it.
+3. Open `/xlplugins`, search for **LogMimic**, and install it.
 
-Adding the repository does not install the plugin automatically; the first installation requires a click. Later releases are available through Dalamud's plugin updater. Automatic updates depend on your launcher and Dalamud settings.
+The first installation requires a click after adding the repository. Later versions are available through Dalamud's plugin updater.
 
-### Auto Load
+### Getting started
 
-Use **Settings → LogMimic → Auto Load** to enable or disable automatic loading for all configured presets. It is enabled by default, and zone, job and phase matching still apply. Manage presets in the Library. Check the zone and job in the library; assign a phase preset when you need to distinguish bosses or phases within the same zone.
+1. Open `/lm` and enter your Client ID and Client Secret in the FFLogs settings. Create them in [FFLogs API settings](https://www.fflogs.com/api/clients).
+2. Under **Import logs**, enter a report URL and select the fight and player to import.
+3. Check the preset's zone, job and Auto Load settings in the **Library**. Enable **Automatically replay at countdown 0s** to begin replay at 0s.
 
-Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **countdown auto-start** waits during a fresh countdown and enables replay at 0s. By default the first action is aligned to 0s and the recorded intervals are retained. Cancelling the countdown before combat or dying pauses replay. Manually pausing prevents the same countdown from restarting it.
-
-### Replay timing and recorded targets
-
-Automatic replay waits until countdown 0s. Manually enabling replay also waits until 0s before issuing actions. New imports use the selected fight's combat window; negative-time actions in older presets are excluded from replay. Existing nonnegative actions can be used without re-importing.
-
-The library displays the recorded target beside each action. English NPC names resolve through BNpcName row IDs and are compared with live NPC name IDs; display names use the installed client's language where available. For multiple matching NPCs, use the ambiguous-target option below or bind one explicitly. Player targets from a different party can still require explicit binding. See [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md) for the index provenance.
-
-### Automatic targeting and ambiguous enemies
-
-A unique logged target is selected automatically. If several enemies match the same logged target, **Use selected enemy when matching NPCs are ambiguous** uses your current selection only when it is one of those matching enemies. This option is enabled by default.
-
-An action already due and waiting for a target resumes on the next replay update after you select a matching enemy. Future actions retain their recorded times. Unrelated, dead or untargetable objects are not candidates. Explicit target bindings take priority; self and ally actions retain their original targets. Already queued actions may still use their earlier target. The library continues to show the original logged target.
-
-### Replay feedback and action timing
-
-The Replay page keeps **Show replay status panel**. **Show native hotbar button presses** and **Align the first recorded action to 0s** are available under **Settings → LogMimic**; existing choices are retained. The draggable panel is visible before replay begins and shows preset matching, timeline time, the next planned action, and the latest request and confirmation.
-
-When the game accepts an action request, LogMimic plays the native hotbar keypress animation also used by Rotation Solver Reborn. Matching buttons on visible normal and cross hotbars show a short press sequence; the next action retains an outline. Requests and server confirmations are listed separately in the status panel. An accepted request is not a completed action; confirmation timestamps can include cast duration and network delay.
-
-**Align the first recorded action to 0s** is enabled by default. Version 0.4.1 enables it once for existing settings; later choices are retained. It shifts the first action to countdown zero while keeping the intervals between actions. The timeline reads the native countdown agent and uses chat as a fallback when that agent is unavailable. Actions still require a valid target, range and cooldown. Disable this option to preserve original timestamps. Configure it before the countdown.
-
-New imports use an actual cast-start record where one is available. Without one, the completed cast timestamp is preserved. Re-import older presets to apply this correction. NPC matching now also compares exact localized client names when a name-ID match is unavailable.
+The global Auto Load switch, hotbar button presses and first-action alignment are under **Settings → LogMimic**. Death pauses replay.
 
 ### Commands
 
-| Command | Description |
+| Command | Function |
 | --- | --- |
-| `/lm` | Open the plugin window |
-| `/lm replay list` | List saved presets |
-| `/lm replay load <name>` | Load a preset |
-| `/lm replay on` | Manually enable replay after loading a timeline and starting a countdown or combat |
+| `/lm` | Open the main window |
+| `/lm config` | Open settings |
+| `/lm replay on` | Manually enable replay after the timeline has started |
 | `/lm replay off` | Pause replay |
-| `/lm replay status` | Show the current status |
 
-### Korean and global clients
+### Support
 
-Support for both clients is a development goal. The current build targets **Dalamud API 15**. A different API version may prevent the plugin from appearing in the list or loading. Changing the manifest's version number alone does not make a build compatible.
+Please use the **달라살려** channel on Discord. For bug reports, include your client region, Dalamud version and steps to reproduce.
 
-For questions and support, please use the **달라살려** channel on Discord. For bug reports, include your client region, game and Dalamud versions, steps to reproduce, and relevant logs. Remove personal information and credentials before posting.
+This is a test release targeting **Dalamud API 15**. Support for Korean and global clients is in development; actual combat behavior and compatibility with each client still need verification.
 
 ## Credits & License
 
-LogMimic is based on [Oracle v1.3.4](https://github.com/exatrines/Oracle) and uses MirageUI. The native action-use and hotbar keypress paths were checked against [Rotation Solver Reborn](https://github.com/FFXIV-CombatReborn/RotationSolverReborn); timeline scheduling remains based on Oracle. Oracle-derived code is licensed under **AGPL-3.0-or-later**; MirageUI has its own MIT license. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md). Each installable release includes an archive of the corresponding patched source.
+Based on [Oracle v1.3.4](https://github.com/exatrines/Oracle), licensed under **AGPL-3.0-or-later**, with [MirageUI](https://github.com/exatrines/MirageUI) under MIT. Action use and hotbar effects reference [Rotation Solver Reborn](https://github.com/FFXIV-CombatReborn/RotationSolverReborn).
 
-Automated combat may violate FFXIV's terms of service.
+See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md). Each release includes its corresponding source archive.
