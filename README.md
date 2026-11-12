@@ -58,7 +58,7 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 ### 재생 상태와 스킬 표시
 
-재생 화면에서 **재생 상태 패널 표시**와 **단축바 클릭 모션 표시**를 켤 수 있습니다. 둘 다 기본으로 켜져 있습니다. 상태 패널은 재생 시작 전에도 표시되며, 프리셋 매칭 여부·현재 타임라인·다음 스킬의 예정 시각·가장 최근 요청과 사용 확인을 보여줍니다. 패널은 드래그해 옮길 수 있습니다.
+재생 화면에서는 **재생 상태 패널 표시**를 켜거나 끌 수 있습니다. **단축바 클릭 모션 표시**와 **첫 기록 스킬을 0초에 맞추기**는 **설정 → LogMimic**에서 바꿀 수 있으며, 기존 선택은 유지됩니다. 상태 패널은 재생 시작 전에도 표시되며, 프리셋 매칭 여부·현재 타임라인·다음 스킬의 예정 시각·가장 최근 요청과 사용 확인을 보여줍니다. 패널은 드래그해 옮길 수 있습니다.
 
 게임이 스킬 사용 요청을 받아들이면 RSR에서도 사용하는 게임 기본 단축바 눌림 모션을 재생합니다. 일반 단축바와 크로스 단축바의 해당 스킬 버튼에 짧은 클릭 모션이 표시되며, 다음 스킬은 테두리로 표시합니다. 사용 요청과 서버의 사용 확인은 상태 패널에서 따로 확인할 수 있습니다. 요청이 받아들여져도 실제 사용이 완료된 것은 아니며, 사용 확인 시각에는 시전 시간과 통신 지연이 포함될 수 있습니다.
 
@@ -139,7 +139,7 @@ An action already due and waiting for a target resumes on the next replay update
 
 ### Replay feedback and action timing
 
-The Replay page has **Show replay status panel** and **Show native hotbar button presses**, both enabled by default. The draggable panel is visible before replay begins and shows preset matching, timeline time, the next planned action, and the latest request and confirmation.
+The Replay page keeps **Show replay status panel**. **Show native hotbar button presses** and **Align the first recorded action to 0s** are available under **Settings → LogMimic**; existing choices are retained. The draggable panel is visible before replay begins and shows preset matching, timeline time, the next planned action, and the latest request and confirmation.
 
 When the game accepts an action request, LogMimic plays the native hotbar keypress animation also used by Rotation Solver Reborn. Matching buttons on visible normal and cross hotbars show a short press sequence; the next action retains an outline. Requests and server confirmations are listed separately in the status panel. An accepted request is not a completed action; confirmation timestamps can include cast duration and network delay.
 

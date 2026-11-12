@@ -74,7 +74,10 @@ internal sealed partial class ConfigWindow
                                 DrawImportSplit(() => _ffLogsImport.Draw(), () => DrawImportActionsColumn(_ffLogsImport.SelectedClassJobId, "lmImportActions"));
                         }
                         break;
-                    case "settings": _settings.Draw(); break;
+                    case "settings":
+                        _settings.TimelineIsRunning = _engine.IsRunning;
+                        _settings.Draw();
+                        break;
                     default:
                         ImGui.SetCursorPos(new Vector2(24, 12) * scale);
                         using (var content = ImRaii.Child("##lmContent", new Vector2(-24 * scale, 0), false))
@@ -194,14 +197,6 @@ internal sealed partial class ConfigWindow
     {
         var show = C.ReplayShowFeedback;
         if (ImGui.Checkbox(I18n.Get("feedback.show"), ref show)) { C.ReplayShowFeedback = show; C.Save(); }
-        var hotbar = C.ReplayShowHotbarPulse;
-        if (ImGui.Checkbox(I18n.Get("feedback.hotbar"), ref hotbar)) { C.ReplayShowHotbarPulse = hotbar; C.Save(); }
-        using (ImRaii.Disabled(_engine.IsRunning))
-        {
-            var align = C.ReplayAlignFirstActionToZero;
-            if (ImGui.Checkbox(I18n.Get("feedback.align"), ref align)) { C.ReplayAlignFirstActionToZero = align; C.Save(); }
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip(I18n.Get("feedback.align_help"));
-        }
     }
 
     private static void DrawFollowTargetToggle()

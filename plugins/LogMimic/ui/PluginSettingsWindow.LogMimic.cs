@@ -2,7 +2,9 @@ namespace Oracle.UI;
 
 internal sealed partial class PluginSettingsWindow
 {
-    private static void DrawLogMimicSettings()
+    public bool TimelineIsRunning { private get; set; }
+
+    private void DrawLogMimicSettings()
     {
         MirageUi.Header(I18n.Get("lm.settings"));
         var autoLoad = C.LogMimicAutoLoadEnabled;
@@ -12,5 +14,22 @@ internal sealed partial class PluginSettingsWindow
             C.Save();
         }
         ImGui.TextWrapped(I18n.Get("lm.autoload_global_help"));
+        ImGui.Separator();
+        var hotbar = C.ReplayShowHotbarPulse;
+        if (ImGui.Checkbox(I18n.Get("feedback.hotbar"), ref hotbar))
+        {
+            C.ReplayShowHotbarPulse = hotbar;
+            C.Save();
+        }
+        using (ImRaii.Disabled(TimelineIsRunning))
+        {
+            var align = C.ReplayAlignFirstActionToZero;
+            if (ImGui.Checkbox(I18n.Get("feedback.align"), ref align))
+            {
+                C.ReplayAlignFirstActionToZero = align;
+                C.Save();
+            }
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(I18n.Get("feedback.align_help"));
+        }
     }
 }
