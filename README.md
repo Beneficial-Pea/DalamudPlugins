@@ -42,7 +42,11 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 재생 화면의 프리셋에서 **자동 불러오기**를 켜면 해당 지역과 직업에 맞는 타임라인을 자동으로 불러옵니다. 라이브러리에서 지역·직업을 확인하고, 같은 지역에서 보스나 페이즈를 구분해야 한다면 페이즈 프리셋도 지정하세요.
 
-같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **스킬 재생은 직접 켜야 합니다.**
+같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **초읽기 자동 재생**이 켜져 있으면 초읽기 시작부터 준비 스킬을 포함한 기록 시각대로 재생합니다. 초읽기 취소 시 전투 전 재생을 멈추며, 사망해도 재생을 중지합니다. 직접 중지한 경우 같은 초읽기에서는 자동으로 다시 켜지지 않습니다.
+
+### 준비 스킬 가져오기
+
+새로 가져오는 재생 로그는 전투 전 최대 30초의 시전 기록을 함께 요청합니다. 이전 전투에 속한 기록은 제외하며, 로그에 남아 있지 않은 준비 스킬은 자동으로 만들어 넣지 않습니다. 기존 프리셋은 다시 가져오거나 라이브러리에서 `-00:15.000`처럼 음수 시간의 스킬을 추가하세요. 초읽기가 짧아서 이미 지난 준비 스킬은 한꺼번에 실행하지 않고 건너뜁니다.
 
 ### 기본 명령어
 
@@ -51,7 +55,7 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 | `/lm` | 플러그인 창 열기 |
 | `/lm replay list` | 저장된 프리셋 목록 |
 | `/lm replay load <이름>` | 프리셋 불러오기 |
-| `/lm replay on` | 재생 허용 — 타임라인을 불러오고 실제 전투를 시작한 뒤 사용 |
+| `/lm replay on` | 수동 재생 허용 — 타임라인을 불러오고 초읽기 또는 전투를 시작한 뒤 사용 |
 | `/lm replay off` | 재생 중지 |
 | `/lm replay status` | 현재 상태 확인 |
 
@@ -101,7 +105,11 @@ Adding the repository does not install the plugin automatically; the first insta
 
 Enable **Auto Load** beside a preset on the replay page to load it when your zone and job match. Check the zone and job in the library; assign a phase preset when you need to distinguish bosses or phases within the same zone.
 
-Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **replay still requires manual enabling.**
+Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **countdown auto-start** enables replay at the recorded preparation timings when a fresh countdown begins. Cancelling the countdown before combat or dying pauses replay. Manually pausing prevents the same countdown from restarting it.
+
+### Preparation actions
+
+New replay imports request casts from up to 30 seconds before the pull, excluding the previous fight. Preparation actions absent from the report are not invented. Re-import older presets or add negative-time actions such as `-00:15.000` in the library. Preparation actions already missed by a shorter countdown are skipped rather than fired together.
 
 ### Commands
 
@@ -110,7 +118,7 @@ Each zone, job and phase combination can have one preferred preset. Enabling ano
 | `/lm` | Open the plugin window |
 | `/lm replay list` | List saved presets |
 | `/lm replay load <name>` | Load a preset |
-| `/lm replay on` | Enable replay after loading a timeline and starting a real fight |
+| `/lm replay on` | Manually enable replay after loading a timeline and starting a countdown or combat |
 | `/lm replay off` | Pause replay |
 | `/lm replay status` | Show the current status |
 
