@@ -84,3 +84,6 @@ replace('Oracle/UI/ConfigWindow.cs', '        ConfigureLogMimicSize();\n        
 
 from enable_countdown_replay import apply as apply_countdown_replay
 apply_countdown_replay(root, assets)
+
+from add_replay_feedback import apply as apply_replay_feedback
+apply_replay_feedback(root, assets)

@@ -16,5 +16,11 @@ internal sealed class NpcNameIndex
     }
     public IReadOnlyCollection<uint> GetIds(string name) =>
         _ids.TryGetValue(name.Trim(), out var ids) ? ids : Array.Empty<uint>();
+    public static bool MatchesLocalizedName(string loggedName, string liveName, IEnumerable<string> localizedNames)
+    {
+        var actual = liveName.Trim().Normalize();
+        return actual.Length > 0 && (string.Equals(loggedName.Trim().Normalize(), actual, StringComparison.OrdinalIgnoreCase)
+            || localizedNames.Any(n => string.Equals(n.Trim().Normalize(), actual, StringComparison.OrdinalIgnoreCase)));
+    }
     public bool Matches(string name, uint nameId) => nameId != 0 && GetIds(name).Contains(nameId);
 }

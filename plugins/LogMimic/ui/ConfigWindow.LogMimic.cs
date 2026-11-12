@@ -174,6 +174,7 @@ internal sealed partial class ConfigWindow
     private void DrawReplayHome()
     {
         MirageUi.Header(L("session"));
+        DrawReplayFeedbackSettings();
         var autoStart = C.ReplayAutoStartOnCountdown;
         if (ImGui.Checkbox(L("auto_start"), ref autoStart))
         {
@@ -229,6 +230,20 @@ internal sealed partial class ConfigWindow
                 OnSidebarSelectionChanged(TimelinePageId(doc.Id));
                 _lmPage = "library";
             }
+        }
+    }
+
+    private void DrawReplayFeedbackSettings()
+    {
+        var show = C.ReplayShowFeedback;
+        if (ImGui.Checkbox(I18n.Get("feedback.show"), ref show)) { C.ReplayShowFeedback = show; C.Save(); }
+        var hotbar = C.ReplayShowHotbarPulse;
+        if (ImGui.Checkbox(I18n.Get("feedback.hotbar"), ref hotbar)) { C.ReplayShowHotbarPulse = hotbar; C.Save(); }
+        using (ImRaii.Disabled(_engine.IsRunning))
+        {
+            var align = C.ReplayAlignFirstActionToZero;
+            if (ImGui.Checkbox(I18n.Get("feedback.align"), ref align)) { C.ReplayAlignFirstActionToZero = align; C.Save(); }
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(I18n.Get("feedback.align_help"));
         }
     }
 

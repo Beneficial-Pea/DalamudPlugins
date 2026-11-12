@@ -8,7 +8,7 @@ namespace Oracle.Services;
 internal static class TargetNameLookup
 {
     private static readonly Lazy<NpcNameIndex> Index = new(Load);
-    private static readonly Dictionary<string, string> DisplayCache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, HashSet<string>> LocalNameCache = new(StringComparer.OrdinalIgnoreCase);
 
     private static NpcNameIndex Load()
     {
@@ -29,16 +29,14 @@ internal static class TargetNameLookup
     public static bool Matches(string loggedName, IGameObject obj)
     {
         if (obj is not IBattleNpc npc) return false;
-        var ids = Index.Value.GetIds(loggedName);
-        return ids.Count > 0 ? ids.Contains(npc.NameId)
-            : string.Equals(loggedName.Trim(), obj.Name.TextValue, StringComparison.OrdinalIgnoreCase);
+        if (Index.Value.Matches(loggedName, npc.NameId)) return true;
+        return NpcNameIndex.MatchesLocalizedName(loggedName, obj.Name.TextValue, LocalNames(loggedName));
     }
 
-    public static string DisplayName(string loggedName)
+    private static HashSet<string> LocalNames(string loggedName)
     {
-        if (string.IsNullOrWhiteSpace(loggedName)) return loggedName;
-        if (DisplayCache.TryGetValue(loggedName, out var cached)) return cached;
-        var localNames = new HashSet<string>(StringComparer.Ordinal);
+        if (LocalNameCache.TryGetValue(loggedName, out var cached)) return cached;
+        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         try
         {
             var sheet = PluginServices.DataManager.GetExcelSheet<BNpcName>();
@@ -47,17 +45,20 @@ internal static class TargetNameLookup
                 var row = sheet?.GetRowOrDefault(id);
                 if (row is { } value)
                 {
-                    var name = value.Singular.ExtractText();
-                    if (!string.IsNullOrWhiteSpace(name)) localNames.Add(name);
+                    var name = value.Singular.ExtractText().Trim().Normalize();
+                    if (!string.IsNullOrWhiteSpace(name)) names.Add(name);
                 }
             }
         }
-        catch (Exception ex)
-        {
-            PluginServices.Log.Warning(ex, "NPC localized name lookup failed.");
-        }
-        var result = localNames.Count == 1 ? localNames.First() : loggedName;
-        DisplayCache[loggedName] = result;
-        return result;
+        catch (Exception ex) { PluginServices.Log.Warning(ex, "NPC localized name lookup failed."); }
+        LocalNameCache[loggedName] = names;
+        return names;
+    }
+
+    public static string DisplayName(string loggedName)
+    {
+        if (string.IsNullOrWhiteSpace(loggedName)) return loggedName;
+        var names = LocalNames(loggedName);
+        return names.Count == 1 ? names.First() : loggedName;
     }
 }

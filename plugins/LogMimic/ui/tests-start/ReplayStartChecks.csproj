@@ -3,4 +3,5 @@
   <ItemGroup><Compile Include="../ReplayStartGate.cs" Link="ReplayStartGate.cs" /><Compile Include="../CountdownSignals.cs" Link="CountdownSignals.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../NpcNameIndex.cs" Link="NpcNameIndex.cs" /><None Include="../BNpcNames.en.json.gz" Link="BNpcNames.en.json.gz" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayTargetChoice.cs" Link="ReplayTargetChoice.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../ReplayCastTiming.cs" Link="ReplayCastTiming.cs" /><Compile Include="../ReplayFeedbackLog.cs" Link="ReplayFeedbackLog.cs" /></ItemGroup>
 </Project>

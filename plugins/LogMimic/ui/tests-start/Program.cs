@@ -64,3 +64,32 @@ Check(ReplayTargetChoice.Choose(Array.Empty<ulong>(),101,true).ObjectId == null,
 Check(ReplayTargetChoice.Choose(new ulong[] {11,11},22,true).ObjectId == 11, "Duplicate object references do not create false ambiguity");
 Check(ReplayTargetChoice.Choose(new ulong[] {0,0xE0000000UL,11},22,true).ObjectId == 11, "Invalid object IDs must not become targets");
 Console.WriteLine("Unique logged target priority, ambiguous NPC selection, target switching and missing/unrelated target checks passed.");
+
+var castWindows = ReplayCastTiming.Resolve(new ReplayCastMark[] {
+    new(0,100,1,0,true), new(1,100,1,2500,false), new(2,200,2,3000,false),
+    new(3,100,1,4000,true), new(4,100,1,5000,true), new(5,100,1,7500,false),
+    new(6,300,1,8000,true), new(7,300,2,9000,false), new(8,400,1,10000,true)
+});
+Check(castWindows.Count == 4, "Cast-start records must not create duplicate actions or include an interrupted cast");
+Check(castWindows[0].Index == 1 && castWindows[0].StartTimestamp == 0, "Use the real cast start with the original completed event's target");
+Check(castWindows[1].Index == 2 && castWindows[1].StartTimestamp == 3000, "Instant casts retain their logged time");
+Check(castWindows[2].StartTimestamp == 5000, "Pair the most recent start after an interruption");
+Check(castWindows[3].StartTimestamp == 9000, "Mismatched target starts must not be paired");
+Check(ReplayPacing.ConfirmationTimeoutMs(6) >= 7500, "Long casts must not expire at the old 2.6 second timeout");
+Check(ReplayPacing.Scheduled(2.5f,0) == 0 && ReplayPacing.Scheduled(2.5f,null) == 2.5f, "Preserve legacy timing without inventing an unavailable cast start");
+var alignment = ReplayPacing.AlignmentOffset(true,new float[] {0.4f,1.0f});
+Check(Math.Abs((0.4f-alignment)-0)<0.001f && Math.Abs((1.0f-alignment)-0.6f)<0.001f, "First-action alignment must preserve intervals");
+Check(ReplayPacing.AlignmentOffset(false,new float[]{0.4f,1}) == 0, "Alignment off preserves raw log timing");
+var feedback = new ReplayFeedbackLog();
+feedback.Requested("cue",100,"Target",0.4f,0.5f,1000);
+Check(feedback.LastConfirmed == null && feedback.RequestPulse(1100) == 100, "Accepted queue request is not a confirmed skill use");
+feedback.Confirmed("unknown",200,0.6f,1200);
+Check(feedback.LastConfirmed == null, "Unrequested confirmations must not fake replay success");
+feedback.Confirmed("cue",100,0.7f,1300);
+Check(feedback.LastConfirmed?.ActionId == 100 && feedback.ConfirmPulse(1400) == 100, "Flash confirmed skills only after a real confirmation");
+feedback.Confirmed("cue",100,0.8f,1400);
+Check(feedback.History.Count == 1, "A duplicate confirmation must not double-count the action");
+Check(feedback.RequestPulse(1400)==0 && feedback.ConfirmPulse(2000)==0, "Feedback pulses must expire");
+Check(NpcNameIndex.MatchesLocalizedName("Living Liquid","활성 액체",new[]{"활성 액체"}), "Fallback to exact localized NPC text");
+Check(!NpcNameIndex.MatchesLocalizedName("Living Liquid","인형 수렵병",new[]{"활성 액체"}), "Do not target unrelated localized names");
+Console.WriteLine("Recorded cast starts, alignment, long-cast pending, true request/confirmation feedback and Korean-name fallback checks passed.");
