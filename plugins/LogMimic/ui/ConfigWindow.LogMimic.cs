@@ -180,6 +180,7 @@ internal sealed partial class ConfigWindow
             C.ReplayAutoStartOnCountdown = autoStart;
             C.Save();
         }
+        DrawFollowTargetToggle();
         ImGui.TextWrapped(L("intro"));
         ImGui.Spacing();
         var active = _engine.ActiveDocument;
@@ -231,9 +232,22 @@ internal sealed partial class ConfigWindow
         }
     }
 
+    private static void DrawFollowTargetToggle()
+    {
+        var follow = C.ReplayFollowSelectedEnemy;
+        if (ImGui.Checkbox(L("follow_target"), ref follow))
+        {
+            C.ReplayFollowSelectedEnemy = follow;
+            C.Save();
+        }
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(L("follow_target_help"));
+        ImGui.TextWrapped(L("follow_target_summary"));
+    }
+
     private void DrawReplayTargets()
     {
         MirageUi.Header(L("targets"));
+        DrawFollowTargetToggle();
         ImGui.TextWrapped(L("target_help"));
         ImGui.InputInt(L("actor_id"), ref _targetActorId);
         using (ImRaii.Disabled(Replay == null || !Replay.HasReplayDocument || _targetActorId <= 0 || PluginServices.TargetManager.Target == null))

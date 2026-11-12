@@ -46,3 +46,22 @@ var npcRows=JsonSerializer.Deserialize<Dictionary<uint,string>>(npcZip)!;
 Check(npcRows.Count>10000, "Bundled index must contain real NPC data");
 Check(new NpcNameIndex(npcRows).GetIds("Alexander Prime").Count>0, "Alexander Prime English target can resolve through the bundled index");
 Console.WriteLine("English NPC identity lookup, ambiguous-name preservation and bundled data checks passed.");
+
+var identicalEnemies = new ulong[] { 0x40000101, 0x40000102, 0x40000103, 0x40000104 };
+foreach (var id in identicalEnemies)
+{
+    var decision = ReplayTargetChoice.Choose(true, "enemy", new(id, true, false, true));
+    Check(decision.OverrideRecorded && decision.ObjectId == id, "Follow each explicitly selected instance among four identical NPCs");
+}
+var followFirst = ReplayTargetChoice.Choose(true, "enemy", new(11, true, false, true));
+var followNext = ReplayTargetChoice.Choose(true, "enemy", new(12, true, false, true));
+Check(followFirst.ObjectId == 11 && followNext.ObjectId == 12, "Target switches must use the new selected object without cached mappings");
+foreach (var invalid in new SelectedReplayTarget?[] {null, new(13, true, true, true), new(14, true, false, false), new(15, false, false, true), new(0, true, false, true), new(0xE0000000, true, false, true)})
+{
+    var decision = ReplayTargetChoice.Choose(true, "enemy", invalid);
+    Check(decision.OverrideRecorded && decision.ObjectId == null, "Invalid selection must wait instead of falling back to another enemy");
+}
+foreach (var kind in new[] { "self", "ally", "default", "unknown" })
+    Check(!ReplayTargetChoice.Choose(true, kind, new(16, true, false, true)).OverrideRecorded, "Preserve non-enemy targeting: " + kind);
+Check(!ReplayTargetChoice.Choose(false, "enemy", new(17, true, false, true)).OverrideRecorded, "Disabled option must preserve recorded/mapped targeting");
+Console.WriteLine("Current-target selection, switching among identical NPCs, missing/dead target waiting and self/ally targeting checks passed.");

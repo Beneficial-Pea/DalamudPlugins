@@ -48,7 +48,13 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 초읽기 종료(0초) 시 자동 재생을 켜면 0초부터 시작합니다. 수동으로 재생을 켜도 초읽기 중에는 스킬을 사용하지 않습니다. 새 로그는 전투 시작 이후 기록을 가져오며, 기존 프리셋의 음수 시간 항목도 재생에서 제외합니다. 로그를 다시 가져오지 않아도 기존 0초 이후 항목은 사용할 수 있습니다.
 
-라이브러리의 스킬명 옆에는 로그에 기록된 대상을 표시합니다. 영문 몬스터명은 BNpcName 이름 ID로 변환해 현재 클라이언트의 대상과 비교하며, 표시 이름은 가능하면 설치된 클라이언트의 언어를 사용합니다. 같은 이름 ID의 몬스터가 여러 마리이거나 다른 로그의 플레이어를 연결해야 한다면 대상 매핑에서 직접 지정하세요. 이름 인덱스의 출처는 [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md)에 있습니다.
+라이브러리의 스킬명 옆에는 로그에 기록된 대상을 표시합니다. 영문 몬스터명은 BNpcName 이름 ID로 변환해 현재 클라이언트의 대상과 비교하며, 표시 이름은 가능하면 설치된 클라이언트의 언어를 사용합니다. 같은 이름 ID의 몬스터가 여러 마리라면 아래의 현재 대상 따라가기 옵션을 쓰거나 대상 매핑에서 직접 지정하세요. 다른 로그의 플레이어 대상은 별도로 연결해야 할 수 있습니다. 이름 인덱스의 출처는 [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md)에 있습니다.
+
+### 현재 선택한 대상 따라가기
+
+재생 또는 대상 매핑 화면에서 **현재 선택한 대상 따라가기**를 켜면, 적 대상 스킬은 로그의 적 매핑 대신 현재 선택한 적에게 사용합니다. 기본값은 꺼짐입니다. 동일한 몬스터가 여러 마리여도 직접 선택한 개체를 따라가며, 대상을 바꾸면 다음 스킬 요청부터 적용합니다.
+
+살아 있고 대상으로 선택 가능한 적이 없으면 해당 공격 스킬은 대기합니다. 자신·아군 대상 스킬은 원래 대상 해석을 유지하고 플러그인이 현재 선택한 타깃을 덮어쓰지 않습니다. 이미 게임에 요청한 스킬은 기존 대상으로 나갈 수 있습니다. 라이브러리에는 계속 로그에 기록된 원래 대상을 표시합니다.
 
 ### 기본 명령어
 
@@ -113,7 +119,13 @@ Each zone, job and phase combination can have one preferred preset. Enabling ano
 
 Automatic replay waits until countdown 0s. Manually enabling replay also waits until 0s before issuing actions. New imports use the selected fight's combat window; negative-time actions in older presets are excluded from replay. Existing nonnegative actions can be used without re-importing.
 
-The library displays the recorded target beside each action. English NPC names resolve through BNpcName row IDs and are compared with live NPC name IDs; display names use the installed client's language where available. Multiple matching NPCs and player targets from a different party can require explicit binding. See [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md) for the index provenance.
+The library displays the recorded target beside each action. English NPC names resolve through BNpcName row IDs and are compared with live NPC name IDs; display names use the installed client's language where available. For multiple matching NPCs, use the current-target option below or bind one explicitly. Player targets from a different party can still require explicit binding. See [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md) for the index provenance.
+
+### Follow currently selected enemy
+
+Enable **Follow currently selected enemy** on the Replay or Targets page to use your selected enemy for enemy-target actions instead of recorded enemy bindings. This option is off by default. It follows the selected instance even among identical NPCs; switching targets applies to the next action request.
+
+Enemy actions wait if there is no living, targetable enemy selected. Self and ally actions retain their original target resolution, and the plugin does not overwrite your current selection. Already queued actions may still use their previously requested target. The library continues to show the original recorded target.
 
 ### Commands
 
