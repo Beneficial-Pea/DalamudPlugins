@@ -56,6 +56,16 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 기록 시각이 되어 대상 때문에 기다리던 스킬은 일치하는 적을 선택하면 다음 재생 업데이트에서 재개합니다. 아직 기록 시각이 되지 않은 스킬은 앞당겨 사용하지 않습니다. 다른 종류의 적이나 죽은·선택할 수 없는 적은 후보에 포함하지 않습니다. 직접 연결한 대상은 매핑 설정을 우선하며, 자신·아군 대상 스킬은 원래 대상을 유지합니다. 이미 요청한 스킬은 이전 대상으로 나갈 수 있습니다. 라이브러리의 이름은 로그에 기록된 원래 대상입니다.
 
+### 재생 상태와 스킬 표시
+
+재생 화면에서 **재생 상태 패널 표시**와 **단축바에 스킬 요청·사용 확인 표시**를 켤 수 있습니다. 둘 다 기본으로 켜져 있습니다. 상태 패널은 재생 시작 전에도 표시되며, 프리셋 매칭 여부·현재 타임라인·다음 스킬의 예정 시각·가장 최근 요청과 사용 확인을 보여줍니다. 패널은 드래그해 옮길 수 있습니다.
+
+단축바의 보라색 점멸은 사용 요청이 게임에 받아들여졌다는 뜻이며, 흰색 점멸은 서버의 사용 확인을 받은 표시입니다. 요청 성공만으로 실제 사용 완료를 표시하지 않습니다. 사용 확인 시각에는 시전 시간과 통신 지연이 포함될 수 있습니다.
+
+**첫 기록 스킬을 0초에 맞추기**는 기본적으로 꺼져 있습니다. 켜면 스킬 간 간격을 유지하며 첫 스킬을 0초로 앞당깁니다. 끄면 로그의 원래 시각을 유지하므로 첫 기록이 0.4초라면 0.4초까지 기다립니다. 초읽기 전에 설정하세요.
+
+새로 가져오는 로그는 실제 시전 시작 기록이 있으면 그 시각을 재생에 사용합니다. 시작 기록이 없으면 완료 기록의 시각을 유지합니다. 이 보정을 기존 프리셋에 적용하려면 로그를 다시 가져오세요. 자동 대상 매칭은 이름 ID와 클라이언트의 정확한 현지화 이름을 함께 비교합니다.
+
 ### 기본 명령어
 
 | 명령어 | 설명 |
@@ -126,6 +136,16 @@ The library displays the recorded target beside each action. English NPC names r
 A unique logged target is selected automatically. If several enemies match the same logged target, **Use selected enemy when matching NPCs are ambiguous** uses your current selection only when it is one of those matching enemies. This option is enabled by default.
 
 An action already due and waiting for a target resumes on the next replay update after you select a matching enemy. Future actions retain their recorded times. Unrelated, dead or untargetable objects are not candidates. Explicit target bindings take priority; self and ally actions retain their original targets. Already queued actions may still use their earlier target. The library continues to show the original logged target.
+
+### Replay feedback and action timing
+
+The Replay page has **Show replay status panel** and **Show replay requests and confirmations on hotbars**, both enabled by default. The draggable panel is visible before replay begins and shows preset matching, timeline time, the next planned action, and the latest request and confirmation.
+
+A violet hotbar pulse means the game accepted an action request; a white pulse means a server action confirmation was observed. Accepting a queued request is not displayed as a completed action. Confirmation timestamps can include cast duration and network delay.
+
+**Align the first recorded action to 0s** is off by default. Enabling it shifts the first action to zero while retaining the intervals between actions. With it disabled, original timestamps are kept, so an action logged at 0.4s waits until 0.4s. Configure this before the countdown.
+
+New imports use an actual cast-start record where one is available. Without one, the completed cast timestamp is preserved. Re-import older presets to apply this correction. NPC matching now also compares exact localized client names when a name-ID match is unavailable.
 
 ### Commands
 
