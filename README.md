@@ -42,11 +42,13 @@ LogMimic(로그미믹)은 FFLogs의 스킬 사용 기록을 가져와 게임 안
 
 재생 화면의 프리셋에서 **자동 불러오기**를 켜면 해당 지역과 직업에 맞는 타임라인을 자동으로 불러옵니다. 라이브러리에서 지역·직업을 확인하고, 같은 지역에서 보스나 페이즈를 구분해야 한다면 페이즈 프리셋도 지정하세요.
 
-같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **초읽기 자동 재생**이 켜져 있으면 초읽기 시작부터 준비 스킬을 포함한 기록 시각대로 재생합니다. 초읽기 취소 시 전투 전 재생을 멈추며, 사망해도 재생을 중지합니다. 직접 중지한 경우 같은 초읽기에서는 자동으로 다시 켜지지 않습니다.
+같은 지역·직업·페이즈에는 하나의 프리셋만 지정할 수 있습니다. 다른 프리셋의 자동 불러오기를 켜면 기존 지정은 해제됩니다. 전투 중에는 자동으로 교체하지 않으며, **초읽기 자동 재생**이 켜져 있으면 초읽기 동안 대기하고 0초가 되면 재생을 시작합니다. 각 스킬은 0초 이후의 원래 기록 시각대로 사용합니다. 초읽기 취소 시 전투 전 재생을 멈추며, 사망해도 재생을 중지합니다. 직접 중지한 경우 같은 초읽기에서는 자동으로 다시 켜지지 않습니다.
 
-### 준비 스킬 가져오기
+### 재생 시작 시점과 대상 표시
 
-새로 가져오는 재생 로그는 전투 전 최대 30초의 시전 기록을 함께 요청합니다. 이전 전투에 속한 기록은 제외하며, 로그에 남아 있지 않은 준비 스킬은 자동으로 만들어 넣지 않습니다. 기존 프리셋은 다시 가져오거나 라이브러리에서 `-00:15.000`처럼 음수 시간의 스킬을 추가하세요. 초읽기가 짧아서 이미 지난 준비 스킬은 한꺼번에 실행하지 않고 건너뜁니다.
+초읽기 종료(0초) 시 자동 재생을 켜면 0초부터 시작합니다. 수동으로 재생을 켜도 초읽기 중에는 스킬을 사용하지 않습니다. 새 로그는 전투 시작 이후 기록을 가져오며, 기존 프리셋의 음수 시간 항목도 재생에서 제외합니다. 로그를 다시 가져오지 않아도 기존 0초 이후 항목은 사용할 수 있습니다.
+
+라이브러리의 스킬명 옆에는 로그에 기록된 대상을 표시합니다. 영문 몬스터명은 BNpcName 이름 ID로 변환해 현재 클라이언트의 대상과 비교하며, 표시 이름은 가능하면 설치된 클라이언트의 언어를 사용합니다. 같은 이름 ID의 몬스터가 여러 마리이거나 다른 로그의 플레이어를 연결해야 한다면 대상 매핑에서 직접 지정하세요. 이름 인덱스의 출처는 [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md)에 있습니다.
 
 ### 기본 명령어
 
@@ -105,11 +107,13 @@ Adding the repository does not install the plugin automatically; the first insta
 
 Enable **Auto Load** beside a preset on the replay page to load it when your zone and job match. Check the zone and job in the library; assign a phase preset when you need to distinguish bosses or phases within the same zone.
 
-Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **countdown auto-start** enables replay at the recorded preparation timings when a fresh countdown begins. Cancelling the countdown before combat or dying pauses replay. Manually pausing prevents the same countdown from restarting it.
+Each zone, job and phase combination can have one preferred preset. Enabling another preset replaces that preference. Timelines do not switch automatically during combat, and **countdown auto-start** waits during a fresh countdown and enables replay at 0s. Each action retains its recorded time after 0s. Cancelling the countdown before combat or dying pauses replay. Manually pausing prevents the same countdown from restarting it.
 
-### Preparation actions
+### Replay timing and recorded targets
 
-New replay imports request casts from up to 30 seconds before the pull, excluding the previous fight. Preparation actions absent from the report are not invented. Re-import older presets or add negative-time actions such as `-00:15.000` in the library. Preparation actions already missed by a shorter countdown are skipped rather than fired together.
+Automatic replay waits until countdown 0s. Manually enabling replay also waits until 0s before issuing actions. New imports use the selected fight's combat window; negative-time actions in older presets are excluded from replay. Existing nonnegative actions can be used without re-importing.
+
+The library displays the recorded target beside each action. English NPC names resolve through BNpcName row IDs and are compared with live NPC name IDs; display names use the installed client's language where available. Multiple matching NPCs and player targets from a different party can require explicit binding. See [NPC_DATA_SOURCE.md](plugins/LogMimic/ui/NPC_DATA_SOURCE.md) for the index provenance.
 
 ### Commands
 

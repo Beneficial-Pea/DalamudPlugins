@@ -34,7 +34,6 @@ internal sealed partial class ConfigWindow
         }
         ImGui.BeginGroup();
         MirageUi.Text("LOGMIMIC", MirageUi.Color.Title, fontSize: MirageUi.FontSize.Large);
-        MirageUi.Text(L("tagline"), MirageUi.Color.Secondary);
         ImGui.EndGroup();
         var style = ImGui.GetStyle();
         var controlsWidth = ImGui.CalcTextSize("EN").X + ImGui.CalcTextSize("한국어").X
@@ -198,8 +197,6 @@ internal sealed partial class ConfigWindow
         if (ImGui.Button(L("import") + "##lmQuickImport")) _lmPage = "import";
         ImGui.Spacing();
         ImGui.TextWrapped(L("manual"));
-        if (active is { ReplayEnabled: true } && !active.Cues.Any(c => c.TimeOffsetSec < 0 && c.ActionId != 0))
-            ImGui.TextWrapped(L("prep_missing"));
         ImGui.Separator();
         MirageUi.Header(L("presets"));
         ImGui.TextWrapped(L("autoload_help"));
@@ -249,7 +246,7 @@ internal sealed partial class ConfigWindow
         var doc = _engine.ActiveDocument;
         if (doc == null) { ImGui.TextWrapped(L("empty_target")); return; }
         foreach (var cue in doc.Cues.Where(c => c.ReplayTargetLogId > 0).GroupBy(c => c.ReplayTargetLogId).Select(g => g.First()))
-            ImGui.TextUnformatted($"{cue.ReplayTargetLogId}  |  {cue.ReplayTargetName}");
+            ImGui.TextUnformatted($"{cue.ReplayTargetLogId}  |  {RecordedTargetLabel(cue)}");
     }
 
     private static void DrawLogMimicAbout()

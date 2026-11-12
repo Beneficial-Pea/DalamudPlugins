@@ -21,3 +21,7 @@ https://github.com/exatrines/MirageUI
 The experimental source compiled in GitHub Actions on November 11, 2026, but the plugin has **not been verified in-game**. Do not claim production readiness.
 
 The `LogMimic_SourceKit.zip` patch source plus Oracle v1.3.4 checkout (including MirageUI) reconstructs the derivative for review and rebuilding.
+
+## English NPC name index
+
+The compressed BNpcName index is derived from xivapi/ffxiv-datamining English game data. Game names belong to Square Enix. See Data/NPC_DATA_SOURCE.md in the plugin package and plugins/LogMimic/ui/NPC_DATA_SOURCE.md in this repository for the pinned source and transformation.

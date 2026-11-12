@@ -1,20 +1,28 @@
+using System.IO.Compression;
+using System.Text.Json;
 using Oracle.Services;
 static void Check(bool value, string name) { if (!value) throw new Exception(name); }
 var gate = new ReplayStartGate();
-Check(!gate.Observe(1,false,true,true), "No countdown: no automatic replay");
-Check(!gate.Observe(1,true,false,true), "Preview/unmatched job must not start");
-Check(!gate.Observe(1,true,true,true), "Readiness changes must not start late");
-Check(gate.Observe(2,true,true,true), "A fresh matching countdown must start replay");
-gate.Pause(2);Check(!gate.Observe(2,true,true,true), "Pause must remain effective in the current countdown");
-gate.Pause(2);Check(!gate.Observe(2,true,true,true), "Reviving must not resume a paused countdown");
-Check(gate.Observe(3,true,true,true), "The next countdown can start again");
-Check(!gate.Observe(4,true,true,false), "Opt-out must be respected");
-Check(ReplayPreparation.IsMissed(-20,-15), "Short countdown must not bunch missed preparation actions");
-Check(!ReplayPreparation.IsMissed(-15,-14.8f), "Small frame delay must not skip the first action");
-Check(!ReplayPreparation.IsMissed(0,10), "Combat actions must retain strict ordering");
-Check(ReplayPreparation.ImportStart(100000,0)==70000, "Import 30 seconds before the pull");
-Check(ReplayPreparation.ImportStart(100000,90000)==90000, "Do not import the previous fight");
-Check(ReplayPreparation.ImportStart(10000,0)==0, "Clamp to the beginning of the report");
+Check(!gate.Observe(1,false,true,true,0), "No countdown: no automatic replay");
+Check(!gate.Observe(1,true,false,true,-15), "Preview/unmatched job must not arm");
+Check(!gate.Observe(1,true,true,true,0), "Readiness changes must not start late");
+Check(!gate.Observe(2,true,true,true,-20), "Wait through the start of a countdown");
+Check(!gate.Observe(2,true,true,true,-15), "Do not execute at preparation time");
+Check(!gate.Observe(2,true,true,true,-0.01f), "Do not start just before zero");
+Check(gate.Observe(2,true,true,true,0), "Start at zero");
+Check(!gate.Observe(2,true,true,true,0.2f), "Only one start per countdown");
+Check(!gate.Observe(3,true,true,true,-10), "Arm a fresh countdown");
+gate.Pause(3);Check(!gate.Observe(3,true,true,true,0), "Pause before zero must cancel the pending automatic start");
+Check(gate.Observe(4,true,true,true,0.01f), "A new countdown can start on the first frame after zero");
+gate.Pause(4);Check(!gate.Observe(4,true,true,true,1), "Reviving must not resume a paused countdown");
+Check(!gate.Observe(5,true,true,false,-10), "Opt-out must be respected");
+Check(!gate.Observe(5,true,true,true,0), "Changing opt-in mid-countdown must wait for a fresh countdown");
+Check(!ReplayStartGate.CanExecuteAt(-0.01f), "Manual enable must not execute before zero");
+Check(ReplayStartGate.CanExecuteAt(0), "Manual enable may execute at zero");
+Check(!ReplayStartGate.IsCombatAction(-15), "Exclude old preset preparation actions");
+Check(!ReplayStartGate.IsCombatAction(-0.001f), "Exclude all negative action times");
+Check(ReplayStartGate.IsCombatAction(0) && ReplayStartGate.IsCombatAction(1.2f), "Keep zero and positive action times unchanged");
+Check(!ReplayStartGate.CanExecuteAt(float.NaN), "Invalid clock must not execute");
 foreach (var text in new[]{"Battle commencing in 20 seconds!", "전투 시작까지 20초!", "전투 개시까지 20초", "戦闘開始まであと20秒"})
 {
  var signals=new CountdownSignals();signals.Receive(text,1000);var first=signals.Drain(1100);
@@ -25,4 +33,16 @@ foreach (var text in new[]{"Battle commencing in 20 seconds!", "전투 시작까
 }
 var late=new CountdownSignals();late.Receive("Battle commencing in 15 seconds!",0);Check(!late.Drain(20000).Started,"Expired queued countdown must not start late");
 var cancel=new CountdownSignals();cancel.Receive("Battle commencing in 15 seconds!",0);cancel.Receive("Countdown canceled.",100);Check(!cancel.Drain(100).Started,"Cancelled pending start");
-Console.WriteLine("Replay countdown gating, manual pause, preparation timing, localization and cancellation checks passed.");
+Console.WriteLine("Zero-time start, negative-time exclusion, manual pause, death pause and countdown cancellation checks passed.");
+
+var names=new NpcNameIndex(new Dictionary<uint,string>{{101,"Alexander Prime"},{102,"Alexander Prime"},{103,"Cruise Chaser"}});
+Check(names.Matches(" ALEXANDER PRIME ",101), "Resolve English name to numeric ID, independent of live Korean name");
+Check(names.GetIds("Alexander Prime").Count==2, "Keep all IDs for duplicate names; do not choose an arbitrary row");
+Check(!names.Matches("Alexander Prime",103), "Do not match a different NPC");
+Check(names.GetIds("Unknown NPC").Count==0 && !names.Matches("Alexander Prime",0), "Missing IDs require fallback, not guessing");
+using var npcFile=File.OpenRead(Path.Combine(AppContext.BaseDirectory,"BNpcNames.en.json.gz"));
+using var npcZip=new GZipStream(npcFile,CompressionMode.Decompress);
+var npcRows=JsonSerializer.Deserialize<Dictionary<uint,string>>(npcZip)!;
+Check(npcRows.Count>10000, "Bundled index must contain real NPC data");
+Check(new NpcNameIndex(npcRows).GetIds("Alexander Prime").Count>0, "Alexander Prime English target can resolve through the bundled index");
+Console.WriteLine("English NPC identity lookup, ambiguous-name preservation and bundled data checks passed.");

@@ -1,21 +1,23 @@
 namespace Oracle.Services;
 
-// One decision per genuine countdown. Manual pause remains effective until a new countdown.
+// One automatic start per genuine countdown, once the timeline reaches zero.
 internal sealed class ReplayStartGate
 {
     private long _handled;
-    public bool Observe(long sequence, bool countdownSession, bool ready, bool enabled)
+    public bool Observe(long sequence, bool countdownSession, bool ready, bool enabled, float elapsed)
     {
         if (!countdownSession || sequence <= 0 || sequence == _handled) return false;
+        if (!ready || !enabled)
+        {
+            _handled = sequence;
+            return false;
+        }
+        if (!CanExecuteAt(elapsed)) return false;
         _handled = sequence;
-        return ready && enabled;
+        return true;
     }
+    public bool IsHandled(long sequence) => sequence > 0 && _handled == sequence;
     public void Pause(long sequence) => _handled = sequence;
-}
-
-internal static class ReplayPreparation
-{
-    public static bool IsMissed(float actionTime, float elapsed) => actionTime < 0 && actionTime < elapsed - 0.75f;
-    public static double ImportStart(double fightStart, double previousFightEnd) =>
-        Math.Max(0, Math.Max(fightStart - 30_000, previousFightEnd));
+    public static bool CanExecuteAt(float elapsed) => float.IsFinite(elapsed) && elapsed >= 0;
+    public static bool IsCombatAction(float time) => float.IsFinite(time) && time >= 0;
 }
