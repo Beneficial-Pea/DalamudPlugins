@@ -12,7 +12,8 @@ internal sealed class LogMimicStatusWindow : Window
         _replay = replay; IsOpen = true; RespectCloseHotkey = false; DisableWindowSounds = true;
         Position = new Vector2(60, 120); PositionCondition = ImGuiCond.FirstUseEver;
     }
-    public override bool DrawConditions() => C.ReplayShowFeedback && PluginServices.ClientState.IsLoggedIn;
+    public override bool DrawConditions() => C.ReplayShowFeedback && PluginServices.ClientState.IsLoggedIn
+        && _replay.IsFeedbackContextActive;
     public override void PreDraw()
     {
         var bg = OracleTheme.Current.WindowBg; bg.W = 0.94f;

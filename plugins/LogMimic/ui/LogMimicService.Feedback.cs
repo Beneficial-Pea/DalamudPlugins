@@ -8,6 +8,9 @@ internal sealed unsafe partial class LogMimicService
     public ReplayFeedbackLog Feedback { get; } = new();
     public bool HasAnyReplayPreset => _store.Documents.Any(d => d.ReplayEnabled);
     public bool ReplayClockRunning => _engine.IsRunning && !_engine.IsPreview;
+    private bool HasMatchingFeedbackPreset => _engine.ActiveDocument is { ReplayEnabled: true } doc
+        && _engine.MatchesLiveZone(doc) && _engine.MatchesLiveJob(doc) && _engine.MatchesLivePreset(doc);
+    public bool IsFeedbackContextActive => ReplayClockRunning && HasMatchingFeedbackPreset;
     public string LoadedPresetName => _engine.ActiveDocument?.Name ?? I18n.Get("lm.none");
     public float ClockSeconds => _engine.ElapsedSeconds;
     private float PlaybackElapsed => _engine.ElapsedSeconds + _playbackOffset;
@@ -16,8 +19,8 @@ internal sealed unsafe partial class LogMimicService
     private static float Scheduled(TimelineCue cue) => ReplayPacing.Scheduled(cue.TimeOffsetSec, cue.ReplayStartOffsetSec);
     private TimelineCue? PreviewCue()
     {
-        if (_doc != null) return null;
-        var selected = _engine.ActiveDocument ?? _store.ActiveDocument;
+        if (_doc != null || !HasMatchingFeedbackPreset) return null;
+        var selected = _engine.ActiveDocument;
         return selected?.Cues.Where(c => c.Kind == TimelineCueKind.Action && c.ActionId != 0 && c.TimeOffsetSec >= 0
             && !selected.ReplayExcludedActionIds.Contains(c.ActionId)).MinBy(Scheduled);
     }

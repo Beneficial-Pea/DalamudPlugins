@@ -16,7 +16,7 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 - **초읽기 자동 시작:** 0초부터 첫 스킬을 시도하고, 이후 스킬 간 간격을 유지합니다.
 - **대상 매칭:** 기록된 대상을 자동으로 찾습니다. 같은 적이 여러 마리라면 그중 직접 선택한 적을 사용합니다.
 - **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
-- **재생 표시:** 단축바 눌림 모션과 상태 패널로 다음 스킬, 사용 요청·확인을 표시합니다.
+- **재생 표시:** 단축바 눌림 모션과 상태 패널로 다음 스킬, 사용 요청·확인을 표시합니다. 상태 패널은 프리셋이 일치하는 전투의 초읽기·전투 중에만 나타납니다.
 
 ### 설치
 
@@ -69,7 +69,7 @@ A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and re
 - **Countdown start:** Attempt the first action at 0s and keep the recorded intervals between actions.
 - **Target matching:** Find the recorded target automatically. When several matching enemies are present, use the one you select.
 - **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
-- **Replay feedback:** Show native hotbar presses, upcoming actions, requests and confirmations.
+- **Replay feedback:** Show native hotbar presses, upcoming actions, requests and confirmations. The status panel appears only during a matching preset's countdown or combat.
 
 ### Installation
 
