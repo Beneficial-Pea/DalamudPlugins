@@ -47,21 +47,20 @@ Check(npcRows.Count>10000, "Bundled index must contain real NPC data");
 Check(new NpcNameIndex(npcRows).GetIds("Alexander Prime").Count>0, "Alexander Prime English target can resolve through the bundled index");
 Console.WriteLine("English NPC identity lookup, ambiguous-name preservation and bundled data checks passed.");
 
-var identicalEnemies = new ulong[] { 0x40000101, 0x40000102, 0x40000103, 0x40000104 };
-foreach (var id in identicalEnemies)
+var loggedUnique = ReplayTargetChoice.Choose(new ulong[] {11}, 22, true);
+Check(loggedUnique.ObjectId == 11 && !loggedUnique.UsedCurrentSelection, "Unique logged target must win over a different selected enemy");
+var identicalEnemies = new ulong[] {101,102,103,104};
+foreach (var selected in identicalEnemies)
 {
-    var decision = ReplayTargetChoice.Choose(true, "enemy", new(id, true, false, true));
-    Check(decision.OverrideRecorded && decision.ObjectId == id, "Follow each explicitly selected instance among four identical NPCs");
+    var result = ReplayTargetChoice.Choose(identicalEnemies, selected, true);
+    Check(result.ObjectId == selected && result.UsedCurrentSelection, "Choose the selected instance only among matching enemies");
 }
-var followFirst = ReplayTargetChoice.Choose(true, "enemy", new(11, true, false, true));
-var followNext = ReplayTargetChoice.Choose(true, "enemy", new(12, true, false, true));
-Check(followFirst.ObjectId == 11 && followNext.ObjectId == 12, "Target switches must use the new selected object without cached mappings");
-foreach (var invalid in new SelectedReplayTarget?[] {null, new(13, true, true, true), new(14, true, false, false), new(15, false, false, true), new(0, true, false, true), new(0xE0000000, true, false, true)})
-{
-    var decision = ReplayTargetChoice.Choose(true, "enemy", invalid);
-    Check(decision.OverrideRecorded && decision.ObjectId == null, "Invalid selection must wait instead of falling back to another enemy");
-}
-foreach (var kind in new[] { "self", "ally", "default", "unknown" })
-    Check(!ReplayTargetChoice.Choose(true, kind, new(16, true, false, true)).OverrideRecorded, "Preserve non-enemy targeting: " + kind);
-Check(!ReplayTargetChoice.Choose(false, "enemy", new(17, true, false, true)).OverrideRecorded, "Disabled option must preserve recorded/mapped targeting");
-Console.WriteLine("Current-target selection, switching among identical NPCs, missing/dead target waiting and self/ally targeting checks passed.");
+Check(ReplayTargetChoice.Choose(identicalEnemies,101,true).ObjectId == 101
+    && ReplayTargetChoice.Choose(identicalEnemies,103,true).ObjectId == 103, "Re-evaluate selection on every action request");
+Check(ReplayTargetChoice.Choose(identicalEnemies,null,true).ObjectId == null, "Ambiguous target without a selection must wait");
+Check(ReplayTargetChoice.Choose(identicalEnemies,999,true).ObjectId == null, "An unrelated selected enemy must never override the logged target group");
+Check(ReplayTargetChoice.Choose(identicalEnemies,101,false).ObjectId == null, "Respect disabled ambiguity fallback");
+Check(ReplayTargetChoice.Choose(Array.Empty<ulong>(),101,true).ObjectId == null, "Do not attack an unrelated target when the logged enemy is absent");
+Check(ReplayTargetChoice.Choose(new ulong[] {11,11},22,true).ObjectId == 11, "Duplicate object references do not create false ambiguity");
+Check(ReplayTargetChoice.Choose(new ulong[] {0,0xE0000000UL,11},22,true).ObjectId == 11, "Invalid object IDs must not become targets");
+Console.WriteLine("Unique logged target priority, ambiguous NPC selection, target switching and missing/unrelated target checks passed.");

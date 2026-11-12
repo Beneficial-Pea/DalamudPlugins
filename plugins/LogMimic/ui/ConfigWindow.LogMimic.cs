@@ -234,10 +234,10 @@ internal sealed partial class ConfigWindow
 
     private static void DrawFollowTargetToggle()
     {
-        var follow = C.ReplayFollowSelectedEnemy;
+        var follow = C.ReplayUseSelectedForAmbiguousTargets;
         if (ImGui.Checkbox(L("follow_target"), ref follow))
         {
-            C.ReplayFollowSelectedEnemy = follow;
+            C.ReplayUseSelectedForAmbiguousTargets = follow;
             C.Save();
         }
         if (ImGui.IsItemHovered()) ImGui.SetTooltip(L("follow_target_help"));

@@ -56,33 +56,29 @@ def apply(root, assets):
     rep(svc, '            _boundTargets[cue.ReplayTargetLogId] = candidates[0]!.GameObjectId;\n', '')
 
     shutil.copyfile(assets / 'ReplayTargetChoice.cs', root / 'Oracle/Services/ReplayTargetChoice.cs')
-    rep('Oracle/Configuration.cs', '    public bool ReplayAutoStartOnCountdown { get; set; } = true;', '    public bool ReplayAutoStartOnCountdown { get; set; } = true;\n    public bool ReplayFollowSelectedEnemy { get; set; }')
-    rep(svc, '        reason = null;\n        if (cue.ReplayTargetKind == "self")', '''        reason = null;
-        var selectedTarget = PluginServices.TargetManager.Target;
-        var selectedSnapshot = selectedTarget == null ? (SelectedReplayTarget?)null : new SelectedReplayTarget(
-            selectedTarget.GameObjectId,
-            selectedTarget is IBattleNpc enemy && (enemy.StatusFlags & StatusFlags.Hostile) != 0,
-            selectedTarget.IsDead,
-            selectedTarget.IsTargetable);
-        var selection = ReplayTargetChoice.Choose(C.ReplayFollowSelectedEnemy, cue.ReplayTargetKind, selectedSnapshot);
-        if (selection.OverrideRecorded)
+    rep('Oracle/Configuration.cs', '    public bool ReplayAutoStartOnCountdown { get; set; } = true;', '    public bool ReplayAutoStartOnCountdown { get; set; } = true;\n    public bool ReplayUseSelectedForAmbiguousTargets { get; set; } = true;')
+    rep(svc, '''        if (candidates.Length == 1)
         {
-            if (selection.ObjectId is { } objectId && selectedTarget?.GameObjectId == objectId)
-                return selectedTarget;
-            reason = I18n.Get("replay.select_enemy");
-            return null;
+            return candidates[0];
         }
-        if (cue.ReplayTargetKind == "self")''')
-    rep(svc, '        if (target != null && (cue.ReplayTargetKind == "enemy" || cue.ReplayTargetKind == "ally"))', '        if (!C.ReplayFollowSelectedEnemy && target != null && (cue.ReplayTargetKind == "enemy" || cue.ReplayTargetKind == "ally"))')
-    rep(svc, '            _state = I18n.Format("replay.target", cue.ReplayTargetLogId, cue.ReplayTargetName, reason);', '            _state = C.ReplayFollowSelectedEnemy && cue.ReplayTargetKind == "enemy"\n                ? reason : I18n.Format("replay.target", cue.ReplayTargetLogId, cue.ReplayTargetName, reason);')
-    follow_text = {
-        'lm.follow_target': ('Follow currently selected enemy', '현재 선택한 대상 따라가기'),
-        'lm.follow_target_help': ('Enemy-target actions follow your selected living, targetable enemy, without using recorded enemy bindings. With no valid enemy selected they wait. Self/ally actions retain their recorded targets, and the plugin does not overwrite your selection. Already queued actions retain their sent target. The library still shows the original logged target.', '적 대상 스킬은 로그 매핑 대신 현재 선택한 살아 있는 적에게 사용합니다. 유효한 적을 선택하지 않으면 해당 스킬은 대기합니다. 자신·아군 스킬은 로그 대상을 유지하며 선택한 타깃을 덮어쓰지 않습니다. 이미 요청한 스킬은 기존 대상으로 나갈 수 있습니다. 라이브러리에는 원래 로그 대상을 표시합니다.'),
-        'lm.follow_target_summary': ('Changing your selected enemy applies to the next action request. Enemy actions wait with no valid target.', '선택한 적을 바꾸면 다음 스킬 요청부터 따라갑니다. 유효한 적이 없으면 공격 스킬은 대기합니다.'),
-        'replay.select_enemy': ('Select a living, targetable enemy to continue replay.', '재생을 계속하려면 살아 있고 공격 대상으로 선택 가능한 적을 선택하세요.'),
+        reason = candidates.Length == 0 ? I18n.Get("replay.not_spawned") : I18n.Get("replay.multiple");''', '''        var selection = ReplayTargetChoice.Choose(
+            candidates.Select(candidate => candidate.GameObjectId).ToArray(),
+            PluginServices.TargetManager.Target?.GameObjectId,
+            C.ReplayUseSelectedForAmbiguousTargets && cue.ReplayTargetKind == "enemy");
+        if (selection.ObjectId is { } chosenId)
+            return candidates.First(candidate => candidate.GameObjectId == chosenId);
+        reason = candidates.Length == 0 ? I18n.Get("replay.not_spawned")
+            : C.ReplayUseSelectedForAmbiguousTargets && cue.ReplayTargetKind == "enemy"
+                ? I18n.Get("replay.select_matching_enemy") : I18n.Get("replay.multiple");''')
+    rep(svc, '        if (target != null && (cue.ReplayTargetKind == "enemy" || cue.ReplayTargetKind == "ally"))', '        if (target != null && cue.ReplayTargetKind == "enemy")')
+    hybrid_text = {
+        'lm.follow_target': ('Use selected enemy when matching NPCs are ambiguous', '같은 적이 여러 마리면 현재 선택한 대상 사용'),
+        'lm.follow_target_help': ('A unique logged target is selected automatically. With multiple matching enemies, use your current selection only if it is one of those matches. Explicit bindings take priority. Self/ally actions retain their recorded target and do not overwrite your enemy selection. Queued actions keep their previously sent target.', '로그 대상이 하나로 구분되면 자동으로 따라갑니다. 같은 대상 후보가 여러 마리일 때만 그중 현재 선택한 적을 사용합니다. 직접 연결한 대상은 매핑 설정을 우선합니다. 자신·아군 스킬은 원래 대상을 유지하고 선택한 적을 덮어쓰지 않습니다. 이미 요청한 스킬은 기존 대상으로 나갈 수 있습니다.'),
+        'lm.follow_target_summary': ('Unique target: automatic. Multiple matching enemies: choose one to resume waiting actions.', '대상이 하나면 자동 매칭합니다. 같은 적이 여러 마리면 그중 하나를 선택하여 대기 중인 스킬을 재개하세요.'),
+        'replay.select_matching_enemy': ('Multiple enemies match the logged target. Select one of those enemies to resume.', '로그 대상과 일치하는 적이 여러 마리입니다. 그중 공격할 적을 선택하면 재생을 계속합니다.'),
     }
     for lang, index in [('en', 0), ('ko', 1)]:
         p = root / f'Oracle/Data/I18n/{lang}.json'
         m = json.loads(p.read_text(encoding='utf-8'))
-        m.update({key: values[index] for key, values in follow_text.items()})
+        m.update({key: values[index] for key, values in hybrid_text.items()})
         p.write_text(json.dumps(m, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
