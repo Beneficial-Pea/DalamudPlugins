@@ -96,3 +96,6 @@ replace('Oracle/UI/ConfigWindow.cs',
         '        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);',
         '        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);\n        var minSize = ImGui.GetStyle().WindowMinSize;\n        if (_lmMinimized) minSize.Y = 1f;\n        ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, minSize);')
 replace('Oracle/UI/ConfigWindow.cs', '        ImGui.PopStyleVar();', '        ImGui.PopStyleVar(2);')
+
+from add_replay_dtr import apply as apply_dtr
+apply_dtr(root, assets)

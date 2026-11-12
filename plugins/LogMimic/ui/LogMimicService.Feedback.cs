@@ -8,6 +8,7 @@ internal sealed unsafe partial class LogMimicService
     public ReplayFeedbackLog Feedback { get; } = new();
     public bool HasAnyReplayPreset => _store.Documents.Any(d => d.ReplayEnabled);
     public bool ReplayClockRunning => _engine.IsRunning && !_engine.IsPreview;
+    public bool IsReplayEnabled => HasReplayDocument && ReplayClockRunning && !Suspended;
     private bool HasMatchingFeedbackPreset => _engine.ActiveDocument is { ReplayEnabled: true } doc
         && _engine.MatchesLiveZone(doc) && _engine.MatchesLiveJob(doc) && _engine.MatchesLivePreset(doc);
     public bool IsFeedbackContextActive => HasMatchingFeedbackPreset;

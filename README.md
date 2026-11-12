@@ -41,6 +41,8 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 
 전체 자동 불러오기, 단축바 클릭 모션, 첫 스킬 0초 맞추기는 **설정 → LogMimic**에서 바꿀 수 있습니다. 사망하면 재생이 중지됩니다.
 
+게임 정보바의 **LM: ON/OFF**를 왼쪽 클릭하면 재생을 켜거나 중지합니다. 오른쪽 클릭하면 로그미믹 창이 열립니다. 재생을 켜려면 프리셋을 불러오고 초읽기 또는 전투를 시작한 상태여야 합니다.
+
 ### 명령어
 
 | 명령어 | 기능 |
@@ -93,6 +95,8 @@ The first installation requires a click after adding the repository. Later versi
 **Automatic replay starts at countdown 0s. Use any opener or preparation actions before 0s manually.**
 
 The global Auto Load switch, hotbar button presses and first-action alignment are under **Settings → LogMimic**. Death pauses replay.
+
+Left-click **LM: ON/OFF** in the server info bar to enable or pause replay. Right-click it to open LogMimic. Enabling replay requires a loaded replay preset and an active countdown or combat timeline.
 
 ### Commands
 
