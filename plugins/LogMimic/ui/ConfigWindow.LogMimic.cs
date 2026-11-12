@@ -79,7 +79,12 @@ internal sealed partial class ConfigWindow
                         _sidebarCollapsed = state.SidebarCollapsed;
                         break;
                     case "import":
-                        DrawImportSplit(() => _ffLogsImport.Draw(), () => DrawImportActionsColumn(_ffLogsImport.SelectedClassJobId, "lmImportActions"));
+                        ImGui.SetCursorPosX(20 * scale);
+                        using (var importContent = ImRaii.Child("##lmImportContent", new Vector2(-20 * scale, 0), false))
+                        {
+                            if (importContent)
+                                DrawImportSplit(() => _ffLogsImport.Draw(), () => DrawImportActionsColumn(_ffLogsImport.SelectedClassJobId, "lmImportActions"));
+                        }
                         break;
                     case "settings": _settings.Draw(); break;
                     default:
