@@ -108,3 +108,6 @@ apply_potions(root, assets)
 
 from use_manual_target import apply as apply_manual_target
 apply_manual_target(root, assets)
+
+from add_phase_policy import apply as apply_phase_policy
+apply_phase_policy(root, assets)

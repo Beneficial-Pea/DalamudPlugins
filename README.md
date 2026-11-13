@@ -18,7 +18,7 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 - **탕약 선택:** 가져올 때 탕약 포함 여부와 종류·품질을 고릅니다. 자동 선택은 직업에 맞는 소지 탕약을 사용하며, 없거나 사용할 수 없으면 건너뜁니다.
 - **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
 - **글쿨·논글쿨 분리:** 글쿨 순서는 유지하고, 사용 가능한 논글쿨을 사이에 넣습니다. 생존기 하나가 대기해도 다른 스킬을 막지 않습니다.
-- **페이즈 대기:** 로그의 긴 대기 구간은 전투 시간을 유지합니다. 해당 구간에 동기화 신호를 설정했다면 실제 전투 신호를 기다립니다.
+- **페이즈 처리 선택:** 프리셋마다 대기한 스킬부터 이어 쓸지, 실제 페이즈 신호에 맞춰 해당 구간부터 재생할지 선택합니다.
 - **재생 표시:** 단축바 눌림 모션과 게임 정보바의 `LM: ON/OFF`로 재생 상태를 확인합니다.
 
 ### 설치
@@ -41,6 +41,8 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 3. **라이브러리**에서 프리셋의 지역·직업과 자동 불러오기 설정을 확인합니다. **초읽기 종료(0초) 시 자동 재생**을 켜면 초읽기 0초부터 재생을 시작합니다.
 
 **자동 재생은 초읽기 0초부터 시작합니다. 0초 이전에 쓰는 오프닝은 직접 사용해야 합니다.**
+
+**페이즈 처리**는 재생 화면이나 라이브러리에서 전투 전에 고릅니다. 기본값은 **대기한 스킬부터 이어서**이며, 프리셋마다 저장됩니다. **페이즈 전환에 맞춰 해당 구간부터**는 실제 전투 동기화 신호가 필요합니다. 라이브러리의 동기화 행을 우클릭해 **페이즈 시작으로 사용**을 지정할 수 있고, 긴 대기 구간의 기존 동기화도 사용합니다. 신호가 없으면 시간만 보고 임의로 구간을 건너뛰지 않습니다.
 
 전체 자동 불러오기, 단축바 클릭 모션, **현재 글쿨에 맞춰 재생**은 **설정 → LogMimic**에서 바꿀 수 있습니다. 글쿨 맞춤을 끄면 원래 기록 시각대로 재생합니다. 별도 타이머로 지정한 생존기·보조 스킬은 전투 시간을 유지하며, 사망하면 재생이 중지됩니다.
 
@@ -76,7 +78,7 @@ A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and re
 - **Potion selection:** Choose whether to include potions, plus the item and quality. Auto selection uses an owned potion for your job; missing or unusable items are skipped.
 - **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
 - **Separate GCDs and abilities:** Preserve GCD order and weave usable abilities between them. One unavailable mitigation does not block other actions.
-- **Phase timing:** Long recorded gaps retain encounter time. Where a sync cue is configured for that gap, wait for the actual encounter signal.
+- **Phase handling:** Each preset can continue from its waiting action or resume from a new section on an actual phase signal.
 - **Replay feedback:** Show native hotbar presses and `LM: ON/OFF` in the server info bar.
 
 ### Installation
@@ -99,6 +101,8 @@ The first installation requires a click after adding the repository. Later versi
 3. Check the preset's zone, job and Auto Load settings in the **Library**. Enable **Automatically replay at countdown 0s** to begin replay at 0s.
 
 **Automatic replay starts at countdown 0s. Use any opener or preparation actions before 0s manually.**
+
+Choose **Phase handling** before combat on the Replay page or in the Library. Each preset saves its own choice; the default is **Continue from the waiting action**. **Resume from the new phase section** requires an actual encounter sync. Right-click a Sync row in the Library and select **Use as phase start**. Existing syncs in long recorded gaps also apply. Without a signal, elapsed time alone never skips a section.
 
 The global Auto Load switch, hotbar button presses and **Follow my current GCD** are under **Settings → LogMimic**. Disable GCD matching to use original timestamps. Explicit independent utility and mitigation timers retain encounter time. Death pauses replay.
 
