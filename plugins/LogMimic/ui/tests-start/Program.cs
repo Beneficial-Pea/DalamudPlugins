@@ -128,3 +128,4 @@ Console.WriteLine("Native countdown start, zero synchronization, cancellation an
 AdaptiveChecks.Run();
 
 PotionChecks.Run();
+ManualTargetChecks.Run();

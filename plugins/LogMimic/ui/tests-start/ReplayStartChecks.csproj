@@ -8,6 +8,7 @@
   <ItemGroup><Compile Include="../NativeCountdownSignals.cs" Link="NativeCountdownSignals.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayAdaptiveQueue.cs" Link="ReplayAdaptiveQueue.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayPhasePlan.cs" Link="ReplayPhasePlan.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../ReplayManualTarget.cs" Link="ReplayManualTarget.cs" /></ItemGroup>
   <ItemGroup>
     <Compile Include="../ReplayPotionSettings.cs" Link="ReplayPotionSettings.cs" />
     <Compile Include="../ReplayPotionPolicy.cs" Link="ReplayPotionPolicy.cs" />

@@ -105,3 +105,6 @@ apply_adaptive(root, assets)
 
 from add_replay_potions import apply as apply_potions
 apply_potions(root, assets)
+
+from use_manual_target import apply as apply_manual_target
+apply_manual_target(root, assets)
