@@ -130,3 +130,4 @@ AdaptiveChecks.Run();
 PotionChecks.Run();
 ManualTargetChecks.Run();
 PhasePolicyChecks.Run();
+CooldownSkipChecks.Run();

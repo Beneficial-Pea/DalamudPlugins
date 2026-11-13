@@ -111,3 +111,6 @@ apply_manual_target(root, assets)
 
 from add_phase_policy import apply as apply_phase_policy
 apply_phase_policy(root, assets)
+
+from skip_replay_cooldowns import apply as apply_cooldown_skips
+apply_cooldown_skips(root, assets)

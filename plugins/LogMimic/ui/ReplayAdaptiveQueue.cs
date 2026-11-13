@@ -26,7 +26,8 @@ internal sealed record ReplayAdaptiveStep(string CueId, uint ActionId, bool IsGc
 internal sealed record ReplayAdaptivePending(ReplayAdaptiveStep Step, uint ActualActionId, long Deadline,
     long RequestedAt, bool NativeQueued, uint BeforeUseSequence, long ExpectedCastEnd = 0);
 internal readonly record struct ReplayAttemptOutcome(bool Accepted, uint ActionId = 0,
-    int TimeoutMs = 2600, bool TargetBlocked = false, bool NativeQueued = false, uint BeforeUseSequence = 0);
+    int TimeoutMs = 2600, bool TargetBlocked = false, bool NativeQueued = false, uint BeforeUseSequence = 0,
+    bool SkipCooldown = false);
 
 // GCD order stays strict; usable abilities are tried in recorded priority. Abilities are released
 // only after the GCD that preceded them in the log, rather than all firing at time zero.
@@ -41,6 +42,7 @@ internal sealed class ReplayAdaptiveQueue
     public ReplayAdaptivePending? PendingGcd { get; private set; }
     public ReplayAdaptivePending? PendingOgcd { get; private set; }
     public int CompletedCount => _gcdIndex + _ogcdDone.Count;
+    public int CooldownSkippedCount { get; private set; }
     public bool Finished => _gcdIndex == _gcd.Count && _ogcdDone.Count == _ogcd.Count;
     public ReplayAdaptiveStep? NextGcd => _gcdIndex < _gcd.Count && _gcd[_gcdIndex].Segment <= _phase ? _gcd[_gcdIndex] : null;
     private IEnumerable<ReplayAdaptiveStep> ReleasedOgcds => _ogcd.Where(s =>
@@ -66,28 +68,44 @@ internal sealed class ReplayAdaptiveQueue
         Func<ReplayAdaptiveStep, float>? expectedLock = null, bool targetAvailable = true)
     {
         if (!targetAvailable) return false;
-        var gcd = PendingGcd == null && window.CanQueueGcd ? NextGcd : null;
-        var ogcds = PendingOgcd == null ? ReleasedOgcds.Where(s =>
-            window.CanWeave(true, expectedLock?.Invoke(s) ?? 0.6f)).ToList() : [];
-        var leading = _gcdIndex == 0 ? ogcds.Where(s => s.GcdBefore == 0).ToList() : [];
-        var candidates = leading.Cast<ReplayAdaptiveStep?>().Concat(new[] { gcd })
-            .Concat(ogcds.Where(s => !leading.Contains(s)));
-        var gcdTargetBlocked = false;
-        foreach (var step in candidates)
+        // Rebuild after a cooldown skip so the next eligible action can be used
+        // in this update. Bound work per frame; a skip never creates a pending request.
+        for (var skipped = 0; skipped < 64; skipped++)
         {
-            if (step == null) continue;
-            if (!step.IsGcd && window.GcdRemaining <= 0.001f && gcdTargetBlocked) continue;
-            var result = attempt(step);
-            if (!result.Accepted)
+            var gcd = PendingGcd == null && window.CanQueueGcd ? NextGcd : null;
+            var ogcds = PendingOgcd == null ? ReleasedOgcds.Where(s =>
+                window.CanWeave(true, expectedLock?.Invoke(s) ?? 0.6f)).ToList() : [];
+            var leading = _gcdIndex == 0 ? ogcds.Where(s => s.GcdBefore == 0).ToList() : [];
+            var candidates = leading.Cast<ReplayAdaptiveStep?>().Concat(new[] { gcd })
+                .Concat(ogcds.Where(s => !leading.Contains(s)));
+            var gcdTargetBlocked = false;
+            var rebuild = false;
+            foreach (var step in candidates)
             {
-                if (step.IsGcd) gcdTargetBlocked = result.TargetBlocked;
-                continue;
+                if (step == null) continue;
+                if (!step.IsGcd && window.GcdRemaining <= 0.001f && gcdTargetBlocked) continue;
+                var result = attempt(step);
+                if (!result.Accepted)
+                {
+                    if (result.SkipCooldown && !result.TargetBlocked)
+                    {
+                        if (step.IsGcd) _gcdIndex++;
+                        else _ogcdDone.Add(step.CueId);
+                        CooldownSkippedCount++;
+                        DiscardOldPhase();
+                        rebuild = true;
+                        break;
+                    }
+                    if (step.IsGcd) gcdTargetBlocked = result.TargetBlocked;
+                    continue;
+                }
+                var pending = new ReplayAdaptivePending(step, result.ActionId,
+                    now + Math.Max(2600, result.TimeoutMs), now, result.NativeQueued, result.BeforeUseSequence);
+                if (step.IsGcd) PendingGcd = pending;
+                else PendingOgcd = pending;
+                return true;
             }
-            var pending = new ReplayAdaptivePending(step, result.ActionId,
-                now + Math.Max(2600, result.TimeoutMs), now, result.NativeQueued, result.BeforeUseSequence);
-            if (step.IsGcd) PendingGcd = pending;
-            else PendingOgcd = pending;
-            return true;
+            if (!rebuild) return false;
         }
         return false;
     }
