@@ -117,3 +117,6 @@ apply_cooldown_skips(root, assets)
 
 from adapt_replay_procs import apply as apply_proc_pairs
 apply_proc_pairs(root, assets)
+
+from recover_target_switch import apply as apply_target_recovery
+apply_target_recovery(root, assets)

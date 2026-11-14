@@ -11,7 +11,8 @@ internal readonly record struct ReplayActionTraits(int CooldownGroup, int Additi
 }
 
 internal readonly record struct ReplayNativeWindow(float GcdRemaining, float CastRemaining,
-    float AnimationLock, bool ActionQueued, uint QueuedActionId = 0, uint CastingActionId = 0, uint LastUsedSequence = 0)
+    float AnimationLock, bool ActionQueued, uint QueuedActionId = 0, uint CastingActionId = 0, uint LastUsedSequence = 0,
+    ulong QueuedTargetId = 0, uint QueuedActionType = 0)
 {
     private bool Valid => float.IsFinite(GcdRemaining) && float.IsFinite(CastRemaining)
         && float.IsFinite(AnimationLock);
@@ -132,7 +133,10 @@ internal sealed class ReplayAdaptiveQueue
         PendingOgcd = ObserveCast(PendingOgcd);
         bool Expired(ReplayAdaptivePending pending)
         {
-            if (pending.ActualActionId == window.QueuedActionId || pending.ActualActionId == window.CastingActionId) return false;
+            if (pending.ActualActionId == window.CastingActionId && window.CastRemaining > 0) return false;
+            if (pending.ActualActionId == window.QueuedActionId
+                && (now <= pending.Deadline || !float.IsFinite(window.GcdRemaining)
+                    || window.GcdRemaining > 0.001f || window.CastRemaining > 0.001f || window.AnimationLock > 0.001f)) return false;
             if (pending.ExpectedCastEnd > now + 100) return true;
             // A disappeared native queue with no new outgoing action sequence was cancelled,
             // not used. Retry the same cue without the full server-confirmation timeout.
@@ -150,6 +154,15 @@ internal sealed class ReplayAdaptiveQueue
         _phase = Math.Max(_phase, phase);
         if (discardEarlier) _discardBeforePhase = Math.Max(_discardBeforePhase, phase);
         DiscardOldPhase();
+    }
+
+    public bool CancelPending(string cueId)
+    {
+        var cancelled = false;
+        if (PendingGcd?.Step.CueId == cueId) { PendingGcd = null; cancelled = true; }
+        if (PendingOgcd?.Step.CueId == cueId) { PendingOgcd = null; cancelled = true; }
+        DiscardOldPhase();
+        return cancelled;
     }
 
     private void DiscardOldPhase()

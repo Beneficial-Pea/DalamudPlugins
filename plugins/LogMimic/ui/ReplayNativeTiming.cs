@@ -24,6 +24,8 @@ internal static unsafe class ReplayNativeTiming
         var cast = manager->CastActionId != 0 ? Math.Max(0, manager->CastTimeTotal - manager->CastTimeElapsed) : 0;
         return new(remaining, cast, Math.Max(0, manager->AnimationLock), manager->ActionQueued,
             manager->ActionQueued ? manager->QueuedActionId : 0, cast > 0 ? manager->CastActionId : 0,
-            manager->LastUsedActionSequence);
+            manager->LastUsedActionSequence,
+            manager->ActionQueued ? (ulong)manager->QueuedTargetId : 0,
+            manager->ActionQueued ? (uint)manager->QueuedActionType : 0);
     }
 }

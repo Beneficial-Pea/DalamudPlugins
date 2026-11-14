@@ -132,3 +132,4 @@ ManualTargetChecks.Run();
 PhasePolicyChecks.Run();
 CooldownSkipChecks.Run();
 ProcPairChecks.Run();
+QueuedTargetChecks.Run();

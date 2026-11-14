@@ -15,6 +15,7 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 - **자동 불러오기:** 지역·직업·페이즈에 맞는 프리셋을 불러옵니다.
 - **초읽기 자동 시작:** 0초부터 현재 캐릭터의 글쿨에 맞춰 스킬을 재생합니다.
 - **직접 타깃 선택:** 공격할 대상은 직접 선택합니다. 새로 사용하는 스킬은 현재 선택한 대상에게 사용하며, 대상이 없으면 기다립니다.
+- **대상 전환:** 보스에서 쫄로 바꿀 때 아직 실행되지 않은 공격 예약도 새 대상에 맞춥니다. 취소된 예약은 같은 기록부터 다시 시도하며, 이미 전송했거나 시전 중인 스킬은 기존 대상을 유지합니다.
 - **탕약 선택:** 가져올 때 탕약 포함 여부와 종류·품질을 고릅니다. 자동 선택은 직업에 맞는 소지 탕약을 사용하며, 없거나 사용할 수 없으면 건너뜁니다.
 - **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
 - **글쿨·논글쿨 분리:** 글쿨 순서는 유지하고, 사용 가능한 논글쿨을 사이에 넣습니다. 생존기 하나가 대기해도 다른 스킬을 막지 않습니다.
@@ -77,6 +78,7 @@ A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and re
 - **Auto Load:** Load presets that match your zone, job and phase.
 - **Countdown start:** Begin at 0s and follow your character's current GCD.
 - **Manual targeting:** Select targets yourself. New action requests use your current selection and wait when no target is selected.
+- **Target changes:** Unsent replay attack queues follow your selected boss or add. Cancelled input retries the same record; actions already sent or casting retain their committed target.
 - **Potion selection:** Choose whether to include potions, plus the item and quality. Auto selection uses an owned potion for your job; missing or unusable items are skipped.
 - **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
 - **Separate GCDs and abilities:** Preserve GCD order and weave usable abilities between them. One unavailable mitigation does not block other actions.

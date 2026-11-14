@@ -31,4 +31,18 @@ internal sealed class ReplayFeedbackLog
         _history.Insert(0, item);
         if (_history.Count > 5) _history.RemoveAt(_history.Count - 1);
     }
+
+    public void RetargetPending(string cueId, string target)
+    {
+        if (!_pending.TryGetValue(cueId, out var request)) return;
+        var changed = request with { Target = target };
+        _pending[cueId] = changed;
+        if (LastRequest?.CueId == cueId) LastRequest = changed;
+    }
+
+    public void CancelPending(string cueId)
+    {
+        _pending.Remove(cueId);
+        if (LastRequest?.CueId == cueId) LastRequest = null;
+    }
 }
