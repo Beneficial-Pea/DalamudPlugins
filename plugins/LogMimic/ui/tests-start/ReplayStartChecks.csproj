@@ -13,6 +13,7 @@
   <ItemGroup><Compile Include="../ReplayCooldownPolicy.cs" Link="ReplayCooldownPolicy.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayProcPairs.cs" Link="ReplayProcPairs.cs" /></ItemGroup>
   <ItemGroup><Compile Include="../ReplayQueuedTargetRecovery.cs" Link="ReplayQueuedTargetRecovery.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../ReplayTimelineHold.cs" Link="ReplayTimelineHold.cs" /><Compile Include="../ReplayDowntimePrep.cs" Link="ReplayDowntimePrep.cs" /></ItemGroup>
   <ItemGroup>
     <Compile Include="../ReplayPotionSettings.cs" Link="ReplayPotionSettings.cs" />
     <Compile Include="../ReplayPotionPolicy.cs" Link="ReplayPotionPolicy.cs" />

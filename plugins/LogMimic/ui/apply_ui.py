@@ -120,3 +120,6 @@ apply_proc_pairs(root, assets)
 
 from recover_target_switch import apply as apply_target_recovery
 apply_target_recovery(root, assets)
+
+from pause_replay_timeline import apply as apply_timeline_holds
+apply_timeline_holds(root, assets)
