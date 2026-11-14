@@ -11,17 +11,10 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 
 ### 주요 기능
 
-- **로그 재생:** FFLogs에서 가져온 스킬 기록을 프리셋으로 저장하고 재생합니다.
-- **자동 불러오기:** 지역·직업·페이즈에 맞는 프리셋을 불러옵니다.
-- **초읽기 자동 시작:** 0초부터 현재 캐릭터의 글쿨에 맞춰 스킬을 재생합니다.
-- **직접 타깃 선택:** 공격할 대상은 직접 선택합니다. 새로 사용하는 스킬은 현재 선택한 대상에게 사용하며, 대상이 없으면 기다립니다.
-- **대기 중 타임라인 정지:** ‘이어서’ 모드에서 대상·사용 조건 때문에 공격이 막히면 공격 타임라인도 멈추고, 다시 진행할 수 있을 때 같은 시점부터 이어갑니다. 실제 게임 쿨타임은 계속 흐릅니다.
-- **탕약 선택:** 가져올 때 탕약 포함 여부와 종류·품질을 고릅니다. 자동 선택은 직업에 맞는 소지 탕약을 사용하며, 없거나 사용할 수 없으면 건너뜁니다.
-- **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
-- **글쿨·논글쿨 분리:** 글쿨 순서는 유지하고, 사용 가능한 논글쿨을 사이에 넣습니다. 생존기 하나가 대기해도 다른 스킬을 막지 않습니다.
-- **쿨타임 건너뛰기:** 스킬 자체의 쿨타임이 남았으면 해당 기록을 건너뛰고 다음 스킬을 시도합니다. 공용 글쿨은 기다리며, 충전이 남은 스킬은 사용합니다.
-- **페이즈 처리 선택:** 프리셋마다 대기한 스킬부터 이어 쓸지, 실제 페이즈 신호에 맞춰 해당 구간부터 재생할지 선택합니다.
-- **재생 표시:** 단축바 눌림 모션과 게임 정보바의 `LM: ON/OFF`로 재생 상태를 확인합니다.
+- **로그 재생:** FFLogs 전투 기록을 가져와 현재 캐릭터의 글쿨에 맞춰 스킬을 재생합니다.
+- **프리셋 관리:** 전투별 프리셋을 저장하고 지역·직업에 맞게 자동으로 불러옵니다.
+- **재생 설정:** 사용할 스킬과 탕약, 페이즈 처리 방식을 전투에 맞게 조정합니다.
+- **직접 제어:** 공격 대상을 직접 선택하고, 게임 정보바에서 재생을 켜거나 중지합니다.
 
 ### 설치
 
@@ -73,20 +66,10 @@ A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and re
 
 ### Features
 
-- **Log replay:** Save imported action records as presets and replay them.
-- **Auto Load:** Load presets that match your zone, job and phase.
-- **Countdown start:** Begin at 0s and follow your character's current GCD.
-- **Manual targeting:** Select targets yourself. New action requests use your current selection and wait when no target is selected.
-- **Target changes:** Unsent replay attack queues follow your selected boss or add. Cancelled input retries the same record; actions already sent or casting retain their committed target.
-- **Pause on stalls:** In continuation mode, target or action-condition stalls also pause the attack timeline. Resume at the same position while real game cooldowns keep running.
-- **Downtime preparation:** Recorded non-damaging self abilities such as Reassemble in long post-start attack gaps use encounter time, even without an attack target. Preparation before 0s stays manual.
-- **Potion selection:** Choose whether to include potions, plus the item and quality. Auto selection uses an owned potion for your job; missing or unusable items are skipped.
-- **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
-- **Separate GCDs and abilities:** Preserve GCD order and weave usable abilities between them. One unavailable mitigation does not block other actions.
-- **Skip personal cooldowns:** Skip an occurrence that is still on its own cooldown and try the next action. Shared GCD waits remain, and charged actions are usable while at least one charge is available.
-- **Live proc pairs:** Choose the base or proc action for Dancer's four Cascade/Fountain/Windmill/Bladeshower pairs and Bard's Burst Shot/Refulgent Arrow pair using current proc buffs. Saved records and their order remain unchanged.
-- **Phase handling:** Each preset can continue from its waiting action or resume from a new section on an actual phase signal.
-- **Replay feedback:** Show native hotbar presses and `LM: ON/OFF` in the server info bar.
+- **Log replay:** Import FFLogs combat records and replay actions at your character's current GCD pace.
+- **Preset management:** Save presets for each fight and load them automatically by zone and job.
+- **Replay settings:** Adjust actions, potion use and phase handling for each fight.
+- **Direct control:** Choose targets yourself and start or pause replay from the server info bar.
 
 ### Installation
 
