@@ -19,6 +19,7 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 - **스킬 설정:** 특정 스킬을 제외하거나 생존기·보조 스킬을 별도 타이머로 재생할 수 있습니다.
 - **글쿨·논글쿨 분리:** 글쿨 순서는 유지하고, 사용 가능한 논글쿨을 사이에 넣습니다. 생존기 하나가 대기해도 다른 스킬을 막지 않습니다.
 - **쿨타임 건너뛰기:** 스킬 자체의 쿨타임이 남았으면 해당 기록을 건너뛰고 다음 스킬을 시도합니다. 공용 글쿨은 기다리며, 충전이 남은 스킬은 사용합니다.
+- **프록 대응:** 무도가의 캐스케이드·파운틴·윈드밀·블레이드 샤워와 각 프록기, 음유시인의 파열 사격·찬란한 화살을 현재 프록에 맞춰 대치합니다. 기록과 순서는 그대로 두고, 실행할 때 사용할 기술을 고릅니다.
 - **페이즈 처리 선택:** 프리셋마다 대기한 스킬부터 이어 쓸지, 실제 페이즈 신호에 맞춰 해당 구간부터 재생할지 선택합니다.
 - **재생 표시:** 단축바 눌림 모션과 게임 정보바의 `LM: ON/OFF`로 재생 상태를 확인합니다.
 
@@ -80,6 +81,7 @@ A Dalamud plugin for Final Fantasy XIV that imports FFLogs combat records and re
 - **Action settings:** Exclude individual actions or run mitigation and utility actions on independent timers.
 - **Separate GCDs and abilities:** Preserve GCD order and weave usable abilities between them. One unavailable mitigation does not block other actions.
 - **Skip personal cooldowns:** Skip an occurrence that is still on its own cooldown and try the next action. Shared GCD waits remain, and charged actions are usable while at least one charge is available.
+- **Live proc pairs:** Choose the base or proc action for Dancer's four Cascade/Fountain/Windmill/Bladeshower pairs and Bard's Burst Shot/Refulgent Arrow pair using current proc buffs. Saved records and their order remain unchanged.
 - **Phase handling:** Each preset can continue from its waiting action or resume from a new section on an actual phase signal.
 - **Replay feedback:** Show native hotbar presses and `LM: ON/OFF` in the server info bar.
 

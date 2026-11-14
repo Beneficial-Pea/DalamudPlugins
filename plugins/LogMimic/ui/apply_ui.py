@@ -114,3 +114,6 @@ apply_phase_policy(root, assets)
 
 from skip_replay_cooldowns import apply as apply_cooldown_skips
 apply_cooldown_skips(root, assets)
+
+from adapt_replay_procs import apply as apply_proc_pairs
+apply_proc_pairs(root, assets)

@@ -131,3 +131,4 @@ PotionChecks.Run();
 ManualTargetChecks.Run();
 PhasePolicyChecks.Run();
 CooldownSkipChecks.Run();
+ProcPairChecks.Run();
