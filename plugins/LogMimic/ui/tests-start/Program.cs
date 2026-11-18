@@ -6,12 +6,12 @@ var gate = new ReplayStartGate();
 Check(!gate.Observe(1,false,true,true,0), "No countdown: no automatic replay");
 Check(!gate.Observe(1,true,false,true,-15), "Preview/unmatched job must not arm");
 Check(!gate.Observe(1,true,true,true,0), "Readiness changes must not start late");
-Check(!gate.Observe(2,true,true,true,-20), "Wait through the start of a countdown");
-Check(!gate.Observe(2,true,true,true,-15), "Do not execute at preparation time");
-Check(!gate.Observe(2,true,true,true,-0.01f), "Do not start just before zero");
-Check(gate.Observe(2,true,true,true,0), "Start at zero");
+Check(gate.Observe(2,true,true,true,-20), "Turn LM ON immediately when a countdown starts");
+Check(!gate.Observe(2,true,true,true,-15), "Do not re-arm during the same countdown");
+Check(!gate.Observe(2,true,true,true,-0.01f), "Keep the same armed session until zero");
+Check(!gate.Observe(2,true,true,true,0), "Already ON: zero releases the execution gate without a second start");
 Check(!gate.Observe(2,true,true,true,0.2f), "Only one start per countdown");
-Check(!gate.Observe(3,true,true,true,-10), "Arm a fresh countdown");
+Check(gate.Observe(3,true,true,true,-10), "A fresh countdown arms before zero");
 gate.Pause(3);Check(!gate.Observe(3,true,true,true,0), "Pause before zero must cancel the pending automatic start");
 Check(gate.Observe(4,true,true,true,0.01f), "A new countdown can start on the first frame after zero");
 gate.Pause(4);Check(!gate.Observe(4,true,true,true,1), "Reviving must not resume a paused countdown");
@@ -23,6 +23,11 @@ Check(!ReplayStartGate.IsCombatAction(-15), "Exclude old preset preparation acti
 Check(!ReplayStartGate.IsCombatAction(-0.001f), "Exclude all negative action times");
 Check(ReplayStartGate.IsCombatAction(0) && ReplayStartGate.IsCombatAction(1.2f), "Keep zero and positive action times unchanged");
 Check(!ReplayStartGate.CanExecuteAt(float.NaN), "Invalid clock must not execute");
+var invalidStart = new ReplayStartGate();
+Check(!invalidStart.Observe(1,true,true,true,float.NaN), "Invalid countdown data must not arm LM");
+Check(invalidStart.Observe(1,true,true,true,-15), "Valid countdown data can arm after an invalid observation");
+Check(!ReplayStartGate.CanExecuteAt(-15) && ReplayStartGate.CanExecuteAt(0),
+    "An armed countdown session still leaves every pre-zero action to the player");
 foreach (var text in new[]{"Battle commencing in 20 seconds!", "전투 시작까지 20초!", "전투 개시까지 20초", "戦闘開始まであと20秒"})
 {
  var signals=new CountdownSignals();signals.Receive(text,1000);var first=signals.Drain(1100);
@@ -134,3 +139,4 @@ CooldownSkipChecks.Run();
 ProcPairChecks.Run();
 QueuedTargetChecks.Run();
 TimelineHoldChecks.Run();
+TargetStallChecks.Run();

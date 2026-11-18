@@ -33,9 +33,9 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 
 1. `/lm`을 열고 **설정 → FFLogs 연결**에 Client ID와 Client Secret을 입력합니다. [FFLogs API 설정](https://www.fflogs.com/api/clients)에서 발급받을 수 있습니다.
 2. **로그 가져오기**에서 보고서 URL을 넣고 전투와 플레이어를 선택해 가져옵니다.
-3. **라이브러리**에서 프리셋의 지역·직업과 자동 불러오기 설정을 확인합니다. **초읽기 종료(0초) 시 자동 재생**을 켜면 초읽기 0초부터 재생을 시작합니다.
+3. **라이브러리**에서 프리셋의 지역·직업과 자동 불러오기 설정을 확인합니다. **초읽기 시작 시 자동 ON**을 켜면 초읽기가 뜰 때 LM이 켜집니다.
 
-**자동 재생은 초읽기 0초부터 시작합니다. 0초 이전에 쓰는 오프닝은 직접 사용해야 합니다.**
+**LM은 초읽기 시작과 함께 ON으로 전환되고, 실제 스킬 사용은 0초부터 시작합니다. 0초 이전에 쓰는 오프닝은 직접 사용해야 합니다.**
 
 **페이즈 처리**는 재생 화면이나 라이브러리에서 전투 전에 고릅니다. 기본값은 **대기한 스킬부터 이어서**이며, 프리셋마다 저장됩니다. **페이즈 전환에 맞춰 해당 구간부터**는 실제 전투 동기화 신호가 필요합니다. 라이브러리의 동기화 행을 우클릭해 **페이즈 시작으로 사용**을 지정할 수 있고, 긴 대기 구간의 기존 동기화도 사용합니다. 신호가 없으면 시간만 보고 임의로 구간을 건너뛰지 않습니다.
 
@@ -88,9 +88,9 @@ The first installation requires a click after adding the repository. Later versi
 
 1. Open `/lm` and enter your Client ID and Client Secret in the FFLogs settings. Create them in [FFLogs API settings](https://www.fflogs.com/api/clients).
 2. Under **Import logs**, enter a report URL and select the fight and player to import.
-3. Check the preset's zone, job and Auto Load settings in the **Library**. Enable **Automatically replay at countdown 0s** to begin replay at 0s.
+3. Check the preset's zone, job and Auto Load settings in the **Library**. Enable **Automatically turn ON when countdown begins** to turn LM ON as soon as the countdown appears.
 
-**Automatic replay starts at countdown 0s. Use any opener or preparation actions before 0s manually.**
+**LM turns ON when the countdown begins; actual action replay starts at 0s. Use any opener or preparation actions before 0s manually.**
 
 Choose **Phase handling** before combat on the Replay page or in the Library. Each preset saves its own choice; the default is **Continue from the waiting action**. **Resume from the new phase section** requires an actual encounter sync. Right-click a Sync row in the Library and select **Use as phase start**. Existing syncs in long recorded gaps also apply. Without a signal, elapsed time alone never skips a section.
 

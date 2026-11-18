@@ -1,6 +1,6 @@
 namespace Oracle.Services;
 
-// One automatic start per genuine countdown, once the timeline reaches zero.
+// Arm once when a genuine countdown begins. Execution is separately gated at zero.
 internal sealed class ReplayStartGate
 {
     private long _handled;
@@ -12,7 +12,7 @@ internal sealed class ReplayStartGate
             _handled = sequence;
             return false;
         }
-        if (!CanExecuteAt(elapsed)) return false;
+        if (!float.IsFinite(elapsed)) return false;
         _handled = sequence;
         return true;
     }

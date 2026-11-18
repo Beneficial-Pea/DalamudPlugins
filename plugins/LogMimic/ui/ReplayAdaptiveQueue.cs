@@ -28,7 +28,7 @@ internal sealed record ReplayAdaptivePending(ReplayAdaptiveStep Step, uint Actua
     long RequestedAt, bool NativeQueued, uint BeforeUseSequence, long ExpectedCastEnd = 0);
 internal readonly record struct ReplayAttemptOutcome(bool Accepted, uint ActionId = 0,
     int TimeoutMs = 2600, bool TargetBlocked = false, bool NativeQueued = false, uint BeforeUseSequence = 0,
-    bool SkipCooldown = false);
+    bool SkipCooldown = false, bool SkipCondition = false);
 
 // GCD order stays strict; usable abilities are tried in recorded priority. Abilities are released
 // only after the GCD that preceded them in the log, rather than all firing at time zero.
@@ -44,6 +44,7 @@ internal sealed class ReplayAdaptiveQueue
     public ReplayAdaptivePending? PendingOgcd { get; private set; }
     public int CompletedCount => _gcdIndex + _ogcdDone.Count;
     public int CooldownSkippedCount { get; private set; }
+    public int ConditionSkippedCount { get; private set; }
     public bool Finished => _gcdIndex == _gcd.Count && _ogcdDone.Count == _ogcd.Count;
     public ReplayAdaptiveStep? NextGcd => _gcdIndex < _gcd.Count && _gcd[_gcdIndex].Segment <= _phase ? _gcd[_gcdIndex] : null;
     private IEnumerable<ReplayAdaptiveStep> ReleasedOgcds => _ogcd.Where(s =>
@@ -88,11 +89,12 @@ internal sealed class ReplayAdaptiveQueue
                 var result = attempt(step);
                 if (!result.Accepted)
                 {
-                    if (result.SkipCooldown && !result.TargetBlocked)
+                    if ((result.SkipCooldown || result.SkipCondition) && !result.TargetBlocked)
                     {
                         if (step.IsGcd) _gcdIndex++;
                         else _ogcdDone.Add(step.CueId);
-                        CooldownSkippedCount++;
+                        if (result.SkipCooldown) CooldownSkippedCount++;
+                        if (result.SkipCondition) ConditionSkippedCount++;
                         DiscardOldPhase();
                         rebuild = true;
                         break;

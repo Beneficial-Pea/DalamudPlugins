@@ -123,3 +123,6 @@ apply_target_recovery(root, assets)
 
 from pause_replay_timeline import apply as apply_timeline_holds
 apply_timeline_holds(root, assets)
+
+from fix_countdown_target_stalls import apply as apply_countdown_target_stalls
+apply_countdown_target_stalls(root, assets)
