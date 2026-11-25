@@ -126,3 +126,21 @@ apply_timeline_holds(root, assets)
 
 from fix_countdown_target_stalls import apply as apply_countdown_target_stalls
 apply_countdown_target_stalls(root, assets)
+
+# Keep the server-info-bar tooltip to one instruction line after all replay patches.
+dtr_path = root / 'Oracle/Services/LogMimicDtrEntry.cs'
+dtr_source = dtr_path.read_text(encoding='utf-8')
+tooltip_start = '        var tooltip = '
+tooltip_end = '        if (tooltip != _lastTooltip)'
+if dtr_source.count(tooltip_start) != 1 or dtr_source.count(tooltip_end) != 1:
+    raise RuntimeError('Unexpected LogMimic server-info tooltip anchors')
+start = dtr_source.index(tooltip_start)
+end = dtr_source.index(tooltip_end, start)
+dtr_source = dtr_source[:start] + '        var tooltip = I18n.Get("dtr.help");\n' + dtr_source[end:]
+dtr_path.write_text(dtr_source, encoding='utf-8')
+for lang, hint in [('ko', '왼쪽 클릭: 재생 켜기/중지'), ('en', 'Left click: Start/stop replay')]:
+    language_path = root / f'Oracle/Data/I18n/{lang}.json'
+    language = json.loads(language_path.read_text(encoding='utf-8'))
+    language['dtr.help'] = hint
+    language_path.write_text(json.dumps(language, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+print("Applied one-line server-info tooltip (KO/EN).")

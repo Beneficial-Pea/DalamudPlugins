@@ -41,7 +41,7 @@ FFLogs의 전투 기록을 불러와 스킬 순서와 타이밍을 재생하는 
 
 전체 자동 불러오기, 단축바 클릭 모션, **현재 글쿨에 맞춰 재생**은 **설정 → LogMimic**에서 바꿀 수 있습니다. 글쿨 맞춤을 끄면 원래 기록 시각대로 재생합니다. 별도 타이머로 지정한 생존기·보조 스킬은 전투 시간을 유지하며, 사망하면 재생이 중지됩니다.
 
-게임 정보바의 **LM: ON/OFF**를 왼쪽 클릭하면 재생을 켜거나 중지합니다. 오른쪽 클릭하면 로그미믹 창이 열립니다. 마우스를 올리면 대기 중인 스킬과 마지막 사용 확인을 볼 수 있습니다. 재생을 켜려면 프리셋을 불러오고 초읽기 또는 전투를 시작한 상태여야 합니다.
+게임 정보바의 **LM: ON/OFF**를 왼쪽 클릭하면 재생을 켜거나 중지합니다. 오른쪽 클릭하면 로그미믹 창이 열립니다. 마우스를 올리면 왼쪽 클릭 조작 안내가 한 줄로 표시됩니다. 재생을 켜려면 프리셋을 불러오고 초읽기 또는 전투를 시작한 상태여야 합니다.
 
 ### 명령어
 
@@ -96,7 +96,7 @@ Choose **Phase handling** before combat on the Replay page or in the Library. Ea
 
 The global Auto Load switch, hotbar button presses and **Follow my current GCD** are under **Settings → LogMimic**. Disable GCD matching to use original timestamps. Explicit independent utility and mitigation timers retain encounter time. Death pauses replay.
 
-Left-click **LM: ON/OFF** in the server info bar to enable or pause replay. Right-click it to open LogMimic, or hover to see waiting actions and the last confirmed use. Enabling replay requires a loaded replay preset and an active countdown or combat timeline.
+Left-click **LM: ON/OFF** in the server info bar to enable or pause replay. Right-click it to open LogMimic. Hover for a one-line replay toggle hint. Enabling replay requires a loaded replay preset and an active countdown or combat timeline.
 
 ### Commands
 
