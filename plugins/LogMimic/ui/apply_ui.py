@@ -144,3 +144,6 @@ for lang, hint in [('ko', '왼쪽 클릭: 재생 켜기/중지'), ('en', 'Left c
     language['dtr.help'] = hint
     language_path.write_text(json.dumps(language, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 print("Applied one-line server-info tooltip (KO/EN).")
+
+from reconcile_replay_readiness import apply as apply_replay_readiness
+apply_replay_readiness(root, assets)

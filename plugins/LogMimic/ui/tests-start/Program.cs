@@ -140,3 +140,4 @@ ProcPairChecks.Run();
 QueuedTargetChecks.Run();
 TimelineHoldChecks.Run();
 TargetStallChecks.Run();
+GcdReadinessChecks.Run();

@@ -18,9 +18,13 @@ internal static unsafe class ReplayNativeTiming
 
     public static ReplayNativeWindow Read(ActionManager* manager)
     {
-        // The sheet's global cooldown group is 58; native group indexes are zero-based.
-        var gcd = manager->GetRecastGroupDetail(57);
-        var remaining = gcd != null && gcd->IsActive ? Math.Max(0, gcd->Total - gcd->Elapsed) : 0;
+        // RSR reads the default GCD through the native recast APIs for Heated
+        // Split Shot. Resolve that shared timer through the client instead of
+        // assuming a fixed native recast-group slot and reading its raw fields.
+        const uint defaultGcdAction = 7411;
+        var remaining = ReplayGcdReadiness.Remaining(
+            manager->GetRecastTime(ActionType.Action, defaultGcdAction),
+            manager->GetRecastTimeElapsed(ActionType.Action, defaultGcdAction));
         var cast = manager->CastActionId != 0 ? Math.Max(0, manager->CastTimeTotal - manager->CastTimeElapsed) : 0;
         return new(remaining, cast, Math.Max(0, manager->AnimationLock), manager->ActionQueued,
             manager->ActionQueued ? manager->QueuedActionId : 0, cast > 0 ? manager->CastActionId : 0,
