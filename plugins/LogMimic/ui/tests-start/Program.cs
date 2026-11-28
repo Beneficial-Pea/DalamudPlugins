@@ -141,3 +141,4 @@ QueuedTargetChecks.Run();
 TimelineHoldChecks.Run();
 TargetStallChecks.Run();
 GcdReadinessChecks.Run();
+AllInputQueueChecks.Run();

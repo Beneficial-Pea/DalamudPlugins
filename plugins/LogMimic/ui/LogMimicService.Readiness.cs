@@ -16,10 +16,14 @@ internal sealed unsafe partial class LogMimicService
         }
         catch (Exception ex)
         {
-            _lastReplayUpdateError = ex.GetType().Name + ": " + ex.Message;
+            RecordReplayUpdateError(ex);
             throw;
         }
-        finally { _lastReplayTick = Environment.TickCount64; }
+        finally
+        {
+            _lastReplayTick = Environment.TickCount64;
+            ObserveReplayStall();
+        }
     }
 
     private ReplayNativeWindow ReadReplayWindow(ActionManager* manager) => ReadReplayWindow(manager, out _);
@@ -52,5 +56,8 @@ internal sealed unsafe partial class LogMimicService
             pending == null ? "-" : ActionLookup.GetName(pending.ActualActionId), age));
         if (!string.IsNullOrEmpty(_lastReplayUpdateError))
             Message(I18n.Format("replay.update_error", _lastReplayUpdateError));
+        RestoreReplayHistory();
+        if (!string.IsNullOrEmpty(_stallHistory.LastSummary))
+            Message(I18n.Format("replay.last_stall", _stallHistory.LastSummary));
     }
 }

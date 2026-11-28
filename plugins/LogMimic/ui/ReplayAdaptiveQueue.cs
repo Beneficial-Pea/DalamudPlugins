@@ -137,8 +137,10 @@ internal sealed class ReplayAdaptiveQueue
         {
             if (pending.ActualActionId == window.CastingActionId && window.CastRemaining > 0) return false;
             if (pending.ActualActionId == window.QueuedActionId
-                && (now <= pending.Deadline || !float.IsFinite(window.GcdRemaining)
-                    || window.GcdRemaining > 0.001f || window.CastRemaining > 0.001f || window.AnimationLock > 0.001f)) return false;
+                && (now <= pending.Deadline || window.CastRemaining > 0.001f
+                    || ((now <= pending.Deadline + ReplayQueuedTargetRecovery.HardQueueGraceMs)
+                        && (!float.IsFinite(window.GcdRemaining) || !float.IsFinite(window.AnimationLock)
+                            || window.GcdRemaining > 0.001f || window.AnimationLock > 0.001f)))) return false;
             if (pending.ExpectedCastEnd > now + 100) return true;
             // A disappeared native queue with no new outgoing action sequence was cancelled,
             // not used. Retry the same cue without the full server-confirmation timeout.

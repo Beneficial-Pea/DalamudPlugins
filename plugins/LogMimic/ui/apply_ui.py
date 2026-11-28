@@ -147,3 +147,6 @@ print("Applied one-line server-info tooltip (KO/EN).")
 
 from reconcile_replay_readiness import apply as apply_replay_readiness
 apply_replay_readiness(root, assets)
+
+from recover_all_replay_queues import apply as apply_all_input_recovery
+apply_all_input_recovery(root, assets)

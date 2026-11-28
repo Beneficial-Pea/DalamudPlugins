@@ -8,14 +8,13 @@ internal sealed unsafe partial class LogMimicService
     public string LastTargetRecovery { get; private set; } = string.Empty;
 
     private void CaptureQueuedReplay(ActionManager* manager, string cueId, uint actionId,
-        ulong targetId, uint beforeSequence, long now)
+        ulong targetId, ReplayNativeWindow beforeWindow, long now)
     {
-        if (!ReplayNativeTiming.Traits(actionId).Hostile || !manager->ActionQueued
-            || manager->QueuedActionType != ActionType.Action || manager->QueuedActionId != actionId
-            || (ulong)manager->QueuedTargetId != targetId || manager->LastUsedActionSequence != beforeSequence) return;
         var cast = ActionManager.GetAdjustedCastTime(ActionType.Action, actionId) / 1000f;
-        _queuedReplay = new(cueId, actionId, targetId, beforeSequence,
+        var queued = ReplayQueuedTargetRecovery.Capture(cueId, actionId, targetId,
+            ReplayNativeTiming.Traits(actionId), beforeWindow, ReplayNativeTiming.Read(manager),
             now + ReplayPacing.ConfirmationTimeoutMs(cast + 0.4f));
+        if (queued != null) _queuedReplay = queued;
     }
 
     private bool IsReplayCuePending(string id) => _pendingMainId == id || _pendingIndependentId == id
@@ -38,14 +37,15 @@ internal sealed unsafe partial class LogMimicService
     private void RecoverQueuedTarget()
     {
         if (_queuedReplay is not { } queued) return;
-        if (!IsReplayCuePending(queued.CueId)) { _queuedReplay = null; return; }
         var manager = ActionManager.Instance();
         if (manager == null) return;
         var window = ReplayNativeTiming.Read(manager);
-        var target = ResolveTarget(queued.ActionId, out var reason);
-        var usable = reason == null && target != null
+        var target = queued.FollowSelection ? ResolveTarget(queued.ActionId, out _)
+            : PluginServices.ObjectTable.SearchById(queued.TargetId);
+        var usable = target is { IsDead: false, IsTargetable: true }
             && manager->GetActionStatus(ActionType.Action, queued.ActionId, target.GameObjectId, false, false) == 0;
-        var decision = ReplayQueuedTargetRecovery.Decide(queued, window, target?.GameObjectId, usable, Environment.TickCount64);
+        var decision = ReplayQueuedTargetRecovery.Decide(queued, window, target?.GameObjectId, usable,
+            Environment.TickCount64, IsReplayCuePending(queued.CueId));
         switch (decision)
         {
             case ReplayQueueRecovery.Retarget:
